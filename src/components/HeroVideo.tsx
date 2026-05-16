@@ -293,13 +293,6 @@ export function HeroVideo() {
     tweenVideoTo(CHAPTERS[active].time);
   }, [active, videoSrc, videoReady, tweenVideoTo]);
 
-  const jumpTo = (idx: number) => {
-    const section = sectionRef.current;
-    if (!section) return;
-    const target = section.offsetTop + idx * window.innerHeight;
-    window.scrollTo({ top: target, behavior: "smooth" });
-  };
-
   const chapter = CHAPTERS[active];
 
   const alignClass =
