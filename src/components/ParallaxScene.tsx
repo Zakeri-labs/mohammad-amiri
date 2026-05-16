@@ -38,19 +38,21 @@ export function ParallaxScene({
     offset: ["start end", "end start"],
   });
 
-  // Layered parallax — background image moves slowly, midground card moves opposite, foreground number flies fast
-  const bgY = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
-  const bgScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.15, 1.05, 1.15]);
-  const cardY = useTransform(scrollYProgress, [0, 1], ["20%", "-20%"]);
+  // Layered parallax — lighter on mobile so it stays smooth, fuller on desktop
+  const bgRange = isMobile ? ["-8%", "8%"] : ["-15%", "15%"];
+  const cardRange = isMobile ? ["8%", "-8%"] : ["20%", "-20%"];
+  const bgY = useTransform(scrollYProgress, [0, 1], bgRange);
+  const bgScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.12, 1.04, 1.12]);
+  const cardY = useTransform(scrollYProgress, [0, 1], cardRange);
   const numberY = useTransform(scrollYProgress, [0, 1], ["60%", "-60%"]);
   const numberOpacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 0.15, 0.15, 0]);
 
   return (
     <section ref={ref} className="relative h-screen w-full overflow-hidden bg-background md:h-[140vh]">
-      {/* Background layer — slow parallax */}
+      {/* Background layer — slow parallax (lighter on mobile) */}
       <motion.div
-        style={isMobile ? undefined : { y: bgY, scale: bgScale }}
-        className="absolute inset-0 h-full w-full md:-top-[15%] md:h-[130%]"
+        style={{ y: bgY, scale: bgScale }}
+        className="absolute -top-[8%] h-[120%] w-full md:-top-[15%] md:h-[130%]"
       >
         <img
           src={image}
@@ -61,12 +63,13 @@ export function ParallaxScene({
           height={1280}
           className="h-full w-full object-cover object-center"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/20 to-background md:from-background/60 md:via-background/10" />
+        {/* Strong vertical + directional gradients keep titles legible over any image */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/30 to-background md:from-background/70 md:via-background/15" />
         <div
           className={
             align === "left"
-              ? "absolute inset-0 bg-gradient-to-r from-background/90 via-background/50 to-background/20 md:via-background/30 md:to-transparent"
-              : "absolute inset-0 bg-gradient-to-l from-background/90 via-background/50 to-background/20 md:via-background/30 md:to-transparent"
+              ? "absolute inset-0 bg-gradient-to-r from-background/95 via-background/65 to-background/25 md:from-background/85 md:via-background/40 md:to-transparent"
+              : "absolute inset-0 bg-gradient-to-l from-background/95 via-background/65 to-background/25 md:from-background/85 md:via-background/40 md:to-transparent"
           }
         />
       </motion.div>
@@ -83,10 +86,13 @@ export function ParallaxScene({
 
       {/* Midground card — opposite parallax */}
       <motion.div
-        style={isMobile ? undefined : { y: cardY }}
+        style={{ y: cardY }}
         className={`sticky top-0 flex h-screen items-center px-5 md:px-20 ${align === "right" ? "justify-end" : "justify-start"}`}
       >
-        <div className={`relative z-10 max-w-xl ${align === "right" ? "md:text-right" : "text-left"}`}>
+        <div
+          className={`relative z-10 max-w-xl ${align === "right" ? "md:text-right" : "text-left"}`}
+          style={{ textShadow: "0 2px 24px rgba(0,0,0,0.55)" }}
+        >
           <RevealText className="mb-4 text-[10px] uppercase tracking-[0.35em] text-gold md:mb-5 md:text-xs md:tracking-[0.5em]">
             {eyebrow}
           </RevealText>
