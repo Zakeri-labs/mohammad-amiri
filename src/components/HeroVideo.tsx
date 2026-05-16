@@ -38,9 +38,19 @@ const CHAPTERS: Chapter[] = [
     time: 2.6,
   },
   {
+    id: "arrival",
+    label: "Arrival",
+    eyebrow: "03 — Arrival",
+    title: "The doors part —",
+    italic: "the sky opens.",
+    body: "Soft light spills across honed stone as the residence reveals itself, one frame at a time.",
+    align: "center",
+    time: 3.8,
+  },
+  {
     id: "living",
     label: "Living",
-    eyebrow: "03 — Living Room",
+    eyebrow: "04 — Living Room",
     title: "Welcome home,",
     italic: "the sky room — yours.",
     body: "Bookmatched marble, hand-rubbed bronze, and a 270° view of a city written in light.",
@@ -51,7 +61,7 @@ const CHAPTERS: Chapter[] = [
   {
     id: "dining",
     label: "Dining",
-    eyebrow: "04 — Dining",
+    eyebrow: "05 — Dining",
     title: "A table for",
     italic: "twelve, in the sky.",
     body: "A four-metre Calacatta table beneath hand-blown brass pendants — dinners staged against the Dubai skyline.",
@@ -62,7 +72,7 @@ const CHAPTERS: Chapter[] = [
   {
     id: "kitchen",
     label: "Kitchen",
-    eyebrow: "05 — The Kitchen",
+    eyebrow: "06 — The Kitchen",
     title: "A chef's stage,",
     italic: "cast in marble & brass.",
     body: "A five-metre island in honed Calacatta, integrated Gaggenau appliances, and warm under-cabinet light that softens at dusk.",
@@ -77,18 +87,25 @@ export function HeroVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const tweenRef = useRef<number | null>(null);
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
+  const [videoReady, setVideoReady] = useState(false);
   const [active, setActive] = useState(0);
 
   const handleReady = useCallback((url: string) => setVideoSrc(url), []);
 
-  // Tween video.currentTime smoothly to the target chapter timestamp
-  const tweenVideoTo = useCallback((target: number, durationMs = 1100) => {
+  // Tween video.currentTime smoothly to the target chapter timestamp.
+  // Duration scales with distance so big jumps feel just as smooth as small ones.
+  const tweenVideoTo = useCallback((target: number) => {
     const v = videoRef.current;
     if (!v) return;
     if (tweenRef.current) cancelAnimationFrame(tweenRef.current);
     const start = v.currentTime;
+    const distance = Math.abs(target - start);
+    // ~700ms per second of video, clamped between 900ms and 2200ms
+    const durationMs = Math.min(2200, Math.max(900, distance * 700));
     const startedAt = performance.now();
-    const ease = (t: number) => 1 - Math.pow(1 - t, 3); // easeOutCubic
+    // easeInOutCubic — smoother on both ends, avoids the snap at the start of long jumps
+    const ease = (t: number) =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
     const step = (now: number) => {
       const p = Math.min(1, (now - startedAt) / durationMs);
       const t = start + (target - start) * ease(p);
@@ -100,6 +117,24 @@ export function HeroVideo() {
     };
     tweenRef.current = requestAnimationFrame(step);
   }, []);
+
+  // Wait until the video has buffered enough to seek smoothly
+  useEffect(() => {
+    if (!videoSrc) return;
+    const v = videoRef.current;
+    if (!v) return;
+    const check = () => {
+      // readyState 4 = HAVE_ENOUGH_DATA
+      if (v.readyState >= 4) setVideoReady(true);
+    };
+    check();
+    v.addEventListener("canplaythrough", check);
+    v.addEventListener("loadeddata", check);
+    return () => {
+      v.removeEventListener("canplaythrough", check);
+      v.removeEventListener("loadeddata", check);
+    };
+  }, [videoSrc]);
 
   // Track which chapter "slot" is in view (each chapter == 100vh)
   useEffect(() => {
@@ -137,9 +172,9 @@ export function HeroVideo() {
 
   // Whenever active chapter changes, animate the video to its timestamp
   useEffect(() => {
-    if (!videoSrc) return;
+    if (!videoSrc || !videoReady) return;
     tweenVideoTo(CHAPTERS[active].time);
-  }, [active, videoSrc, tweenVideoTo]);
+  }, [active, videoSrc, videoReady, tweenVideoTo]);
 
   const jumpTo = (idx: number) => {
     const section = sectionRef.current;
