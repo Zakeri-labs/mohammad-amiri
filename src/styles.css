@@ -62,26 +62,38 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
+  --radius: 0.25rem;
+  /* Cinematic Dubai palette — deep night, warm gold, cream */
+  --background: oklch(0.14 0.018 250);
+  --foreground: oklch(0.96 0.012 85);
+  --card: oklch(0.18 0.022 250);
+  --card-foreground: oklch(0.96 0.012 85);
+  --popover: oklch(0.18 0.022 250);
+  --popover-foreground: oklch(0.96 0.012 85);
+  --primary: oklch(0.78 0.13 78);
+  --primary-foreground: oklch(0.14 0.018 250);
+  --secondary: oklch(0.22 0.025 250);
+  --secondary-foreground: oklch(0.96 0.012 85);
+  --muted: oklch(0.22 0.025 250);
+  --muted-foreground: oklch(0.7 0.02 85);
+  --accent: oklch(0.78 0.13 78);
+  --accent-foreground: oklch(0.14 0.018 250);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --border: oklch(0.28 0.025 250);
+  --input: oklch(0.28 0.025 250);
+  --ring: oklch(0.78 0.13 78);
+
+  --gold: oklch(0.78 0.13 78);
+  --gold-bright: oklch(0.88 0.14 88);
+  --night: oklch(0.1 0.02 250);
+  --gradient-gold: linear-gradient(135deg, oklch(0.78 0.13 78), oklch(0.9 0.14 92));
+  --gradient-night: linear-gradient(180deg, oklch(0.14 0.018 250) 0%, oklch(0.08 0.015 250) 100%);
+  --shadow-luxe: 0 30px 80px -20px oklch(0 0 0 / 0.6);
+
+  --font-display: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -140,5 +152,35 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+  }
+  .text-gold {
+    color: var(--gold);
+  }
+  .bg-night {
+    background: var(--night);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .gradient-gold-text {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 }
