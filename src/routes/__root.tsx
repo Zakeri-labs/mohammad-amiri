@@ -76,10 +76,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Sculpted residences across Downtown, Palm Jumeirah, and the Marina. A cinematic portfolio of Dubai's most singular addresses." },
       { name: "author", content: "Maison Dubai" },
       { property: "og:title", content: "Maison Dubai — Cinematic Luxury Real Estate" },
-      { property: "og:description", content: "Sculpted residences across Downtown, Palm Jumeirah, and the Marina." },
+      { property: "og:description", content: "Sculpted residences across Downtown, Palm Jumeirah, and the Marina. A cinematic portfolio of Dubai's most singular addresses." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Maison Dubai — Cinematic Luxury Real Estate" },
+      { name: "twitter:description", content: "Sculpted residences across Downtown, Palm Jumeirah, and the Marina. A cinematic portfolio of Dubai's most singular addresses." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/bd767773-ba29-4e86-8f7e-a9a1156847df/id-preview-a6c643e0--116c436d-f55e-497d-8a43-84849a376c23.lovable.app-1778937355793.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/bd767773-ba29-4e86-8f7e-a9a1156847df/id-preview-a6c643e0--116c436d-f55e-497d-8a43-84849a376c23.lovable.app-1778937355793.png" },
     ],
     links: [
       {
