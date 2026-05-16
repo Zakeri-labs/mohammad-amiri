@@ -136,37 +136,99 @@ export function HeroVideo() {
     };
   }, [videoSrc]);
 
-  // Track which chapter "slot" is in view (each chapter == 100vh)
+  // Snap-by-scroll: each wheel/swipe/key event advances ONE chapter,
+  // regardless of how much was scrolled. At the boundaries the page
+  // scrolls naturally to the previous/next section.
+  const activeRef = useRef(active);
+  useEffect(() => {
+    activeRef.current = active;
+  }, [active]);
+
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
-    let ticking = false;
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const rect = section.getBoundingClientRect();
-        const vh = window.innerHeight;
-        const total = CHAPTERS.length;
-        // progress 0..1 within the section
-        const scrolled = Math.min(
-          Math.max(-rect.top, 0),
-          section.offsetHeight - vh
-        );
-        const idx = Math.min(
-          total - 1,
-          Math.max(0, Math.round(scrolled / vh))
-        );
-        setActive((prev) => (prev === idx ? prev : idx));
-        ticking = false;
-      });
+
+    let lastAt = 0;
+    const COOLDOWN = 950; // matches tween duration
+    let touchStartY = 0;
+    let enteredFromBelow = false;
+
+    const isLocked = () => {
+      const rect = section.getBoundingClientRect();
+      // section fully covers the viewport
+      return rect.top <= 1 && rect.bottom >= window.innerHeight - 1;
     };
-    onScroll();
+
+    const tryAdvance = (dir: 1 | -1, e: Event) => {
+      if (!isLocked()) return;
+      const cur = activeRef.current;
+      const atEnd = dir > 0 && cur >= CHAPTERS.length - 1;
+      const atStart = dir < 0 && cur <= 0;
+      if (atEnd || atStart) {
+        // release: let the page scroll naturally out of the section
+        return;
+      }
+      e.preventDefault();
+      e.stopPropagation();
+      const now = performance.now();
+      if (now - lastAt < COOLDOWN) return;
+      lastAt = now;
+      setActive((p) => Math.max(0, Math.min(CHAPTERS.length - 1, p + dir)));
+    };
+
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) < 2) return;
+      tryAdvance(e.deltaY > 0 ? 1 : -1, e);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (!isLocked()) return;
+      if (e.key === "ArrowDown" || e.key === "PageDown" || e.key === " ") {
+        tryAdvance(1, e);
+      } else if (e.key === "ArrowUp" || e.key === "PageUp") {
+        tryAdvance(-1, e);
+      }
+    };
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0]?.clientY ?? 0;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      const y = e.touches[0]?.clientY ?? 0;
+      const dy = touchStartY - y;
+      if (Math.abs(dy) < 24) return;
+      tryAdvance(dy > 0 ? 1 : -1, e);
+      touchStartY = y;
+    };
+
+    // When the section re-enters the viewport from below (user scrolled
+    // back up), start at the last chapter so the next wheel-up advances
+    // backwards smoothly.
+    const onScroll = () => {
+      const rect = section.getBoundingClientRect();
+      const fullyBelow = rect.top >= window.innerHeight;
+      const fullyAbove = rect.bottom <= 0;
+      if (fullyBelow) {
+        enteredFromBelow = false;
+        activeRef.current = 0;
+        setActive(0);
+      } else if (fullyAbove) {
+        enteredFromBelow = true;
+        activeRef.current = CHAPTERS.length - 1;
+        setActive(CHAPTERS.length - 1);
+      }
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
+    window.addEventListener("keydown", onKey, { capture: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
     return () => {
+      window.removeEventListener("wheel", onWheel, { capture: true } as never);
+      window.removeEventListener("keydown", onKey, { capture: true } as never);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      void enteredFromBelow;
     };
   }, []);
 
@@ -177,10 +239,7 @@ export function HeroVideo() {
   }, [active, videoSrc, videoReady, tweenVideoTo]);
 
   const jumpTo = (idx: number) => {
-    const section = sectionRef.current;
-    if (!section) return;
-    const top = section.offsetTop + idx * window.innerHeight;
-    window.scrollTo({ top, behavior: "smooth" });
+    setActive(Math.max(0, Math.min(CHAPTERS.length - 1, idx)));
   };
 
   const chapter = CHAPTERS[active];
@@ -199,7 +258,7 @@ export function HeroVideo() {
       <section
         ref={sectionRef}
         className="relative w-full"
-        style={{ height: `${CHAPTERS.length * 100}vh` }}
+        style={{ height: `100vh` }}
       >
         {/* Sticky stage — one fixed viewport for the whole journey */}
         <div className="sticky top-0 h-screen w-full overflow-hidden bg-background">
