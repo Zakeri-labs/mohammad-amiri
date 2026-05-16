@@ -92,30 +92,51 @@ export function HeroVideo() {
 
   const handleReady = useCallback((url: string) => setVideoSrc(url), []);
 
-  // Tween video.currentTime smoothly to the target chapter timestamp.
-  // Duration scales with distance so big jumps feel just as smooth as small ones.
+  // Move the video to `target` by actually PLAYING it forward (so every frame
+  // decodes smoothly). Scrubbing via currentTime snaps between keyframes and
+  // looks like the scene is "jumping" — we avoid that here.
+  //   • forward  → play() at a speed that lands on target in ~1.4s, then pause
+  //   • backward → quick seek (no smooth reverse playback in HTML5 video)
   const tweenVideoTo = useCallback((target: number) => {
     const v = videoRef.current;
     if (!v) return;
     if (tweenRef.current) cancelAnimationFrame(tweenRef.current);
     const start = v.currentTime;
-    const distance = Math.abs(target - start);
-    // ~700ms per second of video, clamped between 900ms and 2200ms
-    const durationMs = Math.min(2200, Math.max(900, distance * 700));
-    const startedAt = performance.now();
-    // easeInOutCubic — smoother on both ends, avoids the snap at the start of long jumps
-    const ease = (t: number) =>
-      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-    const step = (now: number) => {
-      const p = Math.min(1, (now - startedAt) / durationMs);
-      const t = start + (target - start) * ease(p);
+    const distance = target - start;
+
+    // Going backward (or essentially in place): seek and pause.
+    if (distance <= 0.05) {
       try {
-        v.currentTime = t;
+        v.pause();
+        v.currentTime = Math.max(0, target);
       } catch {}
-      if (p < 1) tweenRef.current = requestAnimationFrame(step);
-      else tweenRef.current = null;
+      return;
+    }
+
+    // Going forward: play at a rate that covers `distance` in ~1.4s,
+    // clamped to a natural-looking range, then pause at target.
+    const desiredMs = 1400;
+    const rate = Math.min(4, Math.max(1, (distance * 1000) / desiredMs));
+    try {
+      v.playbackRate = rate;
+      const p = v.play();
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    } catch {}
+
+    const watch = () => {
+      const cur = v.currentTime;
+      if (cur >= target - 0.03 || v.ended) {
+        try {
+          v.pause();
+          v.currentTime = target;
+          v.playbackRate = 1;
+        } catch {}
+        tweenRef.current = null;
+        return;
+      }
+      tweenRef.current = requestAnimationFrame(watch);
     };
-    tweenRef.current = requestAnimationFrame(step);
+    tweenRef.current = requestAnimationFrame(watch);
   }, []);
 
   // Wait until the video has buffered enough to seek smoothly
