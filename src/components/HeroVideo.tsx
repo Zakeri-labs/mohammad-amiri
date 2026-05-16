@@ -35,24 +35,35 @@ export function HeroVideo() {
   }, [videoSrc]);
 
   // Phase 1 — Exterior, Burj Khalifa wide
-  const p1Opacity = useTransform(scrollYProgress, [0, 0.1, 0.22, 0.3], [1, 1, 1, 0]);
-  const p1Y = useTransform(scrollYProgress, [0, 0.3], ["0%", "-10%"]);
+  const p1Opacity = useTransform(scrollYProgress, [0, 0.08, 0.16, 0.22], [1, 1, 1, 0]);
+  const p1Y = useTransform(scrollYProgress, [0, 0.22], ["0%", "-10%"]);
 
   // Phase 2 — Approach / glass
-  const p2Opacity = useTransform(scrollYProgress, [0.32, 0.42, 0.55, 0.65], [0, 1, 1, 0]);
-  const p2Y = useTransform(scrollYProgress, [0.32, 0.65], ["12%", "-12%"]);
+  const p2Opacity = useTransform(scrollYProgress, [0.24, 0.32, 0.4, 0.46], [0, 1, 1, 0]);
+  const p2Y = useTransform(scrollYProgress, [0.24, 0.46], ["12%", "-12%"]);
 
-  // Phase 3 — Inside the residence
-  const p3Opacity = useTransform(scrollYProgress, [0.68, 0.8, 1], [0, 1, 1]);
-  const p3Y = useTransform(scrollYProgress, [0.68, 0.85], ["18%", "0%"]);
+  // Phase 3a — Living room (welcome + main title)
+  const p3Opacity = useTransform(scrollYProgress, [0.48, 0.56, 0.66, 0.72], [0, 1, 1, 0]);
+  const p3Y = useTransform(scrollYProgress, [0.48, 0.72], ["14%", "-6%"]);
 
-  const vignette = useTransform(scrollYProgress, [0, 0.5, 1], [0.5, 0.25, 0.7]);
+  // Phase 3b — Dining
+  const p4Opacity = useTransform(scrollYProgress, [0.72, 0.78, 0.84, 0.88], [0, 1, 1, 0]);
+  const p4Y = useTransform(scrollYProgress, [0.72, 0.88], ["10%", "-6%"]);
+
+  // Phase 3c — Kitchen
+  const p5Opacity = useTransform(scrollYProgress, [0.88, 0.93, 1], [0, 1, 1]);
+  const p5Y = useTransform(scrollYProgress, [0.88, 1], ["10%", "0%"]);
+
+  // Persistent stats + advisor (visible throughout the interior)
+  const sideOpacity = useTransform(scrollYProgress, [0.5, 0.58, 1], [0, 1, 1]);
+
+  const vignette = useTransform(scrollYProgress, [0, 0.5, 1], [0.5, 0.28, 0.55]);
 
   return (
     <>
       <VideoPreloader src={heroVideo.url} onReady={handleReady} />
 
-      <section ref={ref} className="relative h-[500vh] w-full">
+      <section ref={ref} className="relative h-[750vh] w-full">
         <div className="sticky top-0 h-screen w-full overflow-hidden bg-background">
           {videoSrc && (
             <video
@@ -152,60 +163,100 @@ export function HeroVideo() {
             </div>
           </motion.div>
 
-          {/* PHASE 3 — Interior */}
+          {/* PHASE 3a — Living room: welcome + main title (left side) */}
           <motion.div
             style={{ opacity: p3Opacity, y: p3Y }}
-            className="pointer-events-none absolute inset-x-0 bottom-0 z-10 px-8 pb-14 md:px-16 md:pb-20"
+            className="pointer-events-none absolute inset-y-0 left-0 z-10 flex max-w-2xl flex-col justify-center px-8 md:px-16"
           >
-            <div className="grid gap-10 md:grid-cols-[1.3fr_1fr] md:items-end">
-              <div>
-                <p className="mb-4 text-xs uppercase tracking-[0.5em] text-gold">
-                  03 — The Sky Residence
-                </p>
-                <p className="font-display text-[clamp(2rem,5.5vw,5rem)] leading-[1] text-foreground">
-                  Welcome home,
-                  <br />
-                  <span className="italic gradient-gold-text">the sky room — yours.</span>
-                </p>
-                <p className="mt-6 max-w-lg text-sm leading-relaxed text-foreground/70">
-                  Bookmatched marble, hand-rubbed bronze, ceilings of 4.2 metres,
-                  and a 270° view of a city written in light.
-                </p>
+            <p className="mb-4 text-xs uppercase tracking-[0.5em] text-gold">
+              03 — Living Room
+            </p>
+            <p className="font-display text-[clamp(2.25rem,6vw,5.5rem)] leading-[1] text-foreground">
+              Welcome home,
+              <br />
+              <span className="italic gradient-gold-text">the sky room — yours.</span>
+            </p>
+            <p className="mt-6 max-w-md text-sm leading-relaxed text-foreground/75">
+              Bookmatched marble, hand-rubbed bronze, ceilings of 4.2 metres,
+              and a 270° view of a city written in light.
+            </p>
+          </motion.div>
+
+          {/* PHASE 3b — Dining */}
+          <motion.div
+            style={{ opacity: p4Opacity, y: p4Y }}
+            className="pointer-events-none absolute inset-y-0 right-0 z-10 flex max-w-xl flex-col justify-center px-8 text-right md:px-16"
+          >
+            <p className="mb-4 text-xs uppercase tracking-[0.5em] text-gold">
+              04 — Dining
+            </p>
+            <p className="font-display text-[clamp(2rem,5vw,4.5rem)] leading-[1] text-foreground">
+              A table for
+              <br />
+              <span className="italic gradient-gold-text">twelve, in the sky.</span>
+            </p>
+            <p className="ml-auto mt-6 max-w-sm text-sm leading-relaxed text-foreground/75">
+              A four-metre Calacatta table beneath hand-blown brass pendants —
+              dinners staged against the Dubai skyline.
+            </p>
+          </motion.div>
+
+          {/* PHASE 3c — Kitchen */}
+          <motion.div
+            style={{ opacity: p5Opacity, y: p5Y }}
+            className="pointer-events-none absolute inset-y-0 left-0 z-10 flex max-w-2xl flex-col justify-center px-8 md:px-16"
+          >
+            <p className="mb-4 text-xs uppercase tracking-[0.5em] text-gold">
+              05 — The Kitchen
+            </p>
+            <p className="font-display text-[clamp(2rem,5vw,4.5rem)] leading-[1] text-foreground">
+              A chef's stage,
+              <br />
+              <span className="italic gradient-gold-text">cast in marble & brass.</span>
+            </p>
+            <p className="mt-6 max-w-md text-sm leading-relaxed text-foreground/75">
+              A five-metre island in honed Calacatta, integrated Gaggenau
+              appliances, and warm under-cabinet light that softens at dusk.
+            </p>
+          </motion.div>
+
+          {/* Persistent stats + advisor card (interior) */}
+          <motion.div
+            style={{ opacity: sideOpacity }}
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-8 pb-10 md:px-16 md:pb-14"
+          >
+            <div className="flex flex-col items-end gap-4 md:flex-row md:items-end md:justify-between">
+              <div className="grid grid-cols-3 gap-6 border-t border-border/50 pt-5 md:min-w-[420px]">
+                <div>
+                  <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">From</div>
+                  <div className="mt-2 font-display text-2xl text-foreground">$8.4M</div>
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Sky m²</div>
+                  <div className="mt-2 font-display text-2xl text-foreground">640</div>
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Level</div>
+                  <div className="mt-2 font-display text-2xl text-foreground">84F</div>
+                </div>
               </div>
 
-              <div className="space-y-6">
-                <div className="grid grid-cols-3 gap-6 border-t border-border/50 pt-6">
-                  <div>
-                    <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">From</div>
-                    <div className="mt-2 font-display text-2xl text-foreground">$8.4M</div>
+              <div className="flex items-center gap-4 rounded-sm border border-border/40 bg-background/50 p-4 backdrop-blur-md">
+                <img
+                  src={advisorImg}
+                  alt="Amira Hassan"
+                  width={48}
+                  height={48}
+                  className="h-12 w-12 rounded-full object-cover"
+                />
+                <div className="flex-1">
+                  <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+                    Private viewing with
                   </div>
-                  <div>
-                    <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Sky m²</div>
-                    <div className="mt-2 font-display text-2xl text-foreground">640</div>
-                  </div>
-                  <div>
-                    <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Level</div>
-                    <div className="mt-2 font-display text-2xl text-foreground">84F</div>
-                  </div>
+                  <div className="font-display text-base text-foreground">Amira Hassan</div>
                 </div>
-
-                <div className="flex items-center gap-4 rounded-sm border border-border/40 bg-background/40 p-4 backdrop-blur-md">
-                  <img
-                    src={advisorImg}
-                    alt="Amira Hassan"
-                    width={48}
-                    height={48}
-                    className="h-12 w-12 rounded-full object-cover"
-                  />
-                  <div className="flex-1">
-                    <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-                      Private viewing with
-                    </div>
-                    <div className="font-display text-base text-foreground">Amira Hassan</div>
-                  </div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-gold">
-                    By appointment
-                  </div>
+                <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-gold">
+                  By appointment
                 </div>
               </div>
             </div>
