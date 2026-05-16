@@ -19,31 +19,31 @@ type Chapter = {
 const CHAPTERS: Chapter[] = [
   {
     id: "burj",
-    label: "Skyline",
-    eyebrow: "01 — Burj Khalifa",
-    title: "A tower of",
-    italic: "light.",
-    body: "828 metres above the desert. Begin the journey — from the skyline of Downtown into a residence written in marble and glass.",
+    label: "Meet Amira",
+    eyebrow: "Hosted by Amira Hassan",
+    title: "Hello —",
+    italic: "I'm Amira.",
+    body: "For twelve years I've placed families into the quiet corners of Dubai. Let me walk you through one of mine — a sky residence above the Burj, told the way I'd show it to a friend.",
     align: "left",
     time: 0.1,
   },
   {
     id: "approach",
-    label: "Approach",
-    eyebrow: "02 — Arrival",
-    title: "Through the glass,",
+    label: "Arrival",
+    eyebrow: "02 — Up to the 112th",
+    title: "Step in with me,",
     italic: "the sky opens.",
-    body: "A private elevator opens at the 112th floor. The doors part — soft light spills across honed stone as the residence reveals itself.",
+    body: "A private elevator, a quiet pause, and the doors part. This is the moment I love most — when the city falls silent and the light does the talking.",
     align: "center",
     time: 3.8,
   },
   {
     id: "living",
     label: "Living",
-    eyebrow: "03 — Living Room",
-    title: "Welcome home,",
-    italic: "the sky room — yours.",
-    body: "Bookmatched marble, hand-rubbed bronze, and a 270° view of a city written in light.",
+    eyebrow: "03 — The Sky Room",
+    title: "Sit a moment —",
+    italic: "the room is yours.",
+    body: "I chose this residence for one reason: the 270° turn from sunrise to skyline. Bookmatched Calacatta, hand-rubbed bronze, and a horizon that never repeats.",
     bullets: ["Ceilings · 4.2 m", "View · 270°", "Marble · Calacatta"],
     align: "left",
     time: 5,
@@ -51,10 +51,10 @@ const CHAPTERS: Chapter[] = [
   {
     id: "dining",
     label: "Dining",
-    eyebrow: "04 — Dining",
-    title: "A table for",
-    italic: "twelve, in the sky.",
-    body: "A four-metre Calacatta table beneath hand-blown brass pendants — dinners staged against the Dubai skyline.",
+    eyebrow: "04 — At My Table",
+    title: "Stay for dinner,",
+    italic: "the city is the view.",
+    body: "A four-metre Calacatta table under hand-blown brass — this is where I host my owners on the night they collect their keys. You're invited too.",
     bullets: ["Seats · 12", "Pendants · hand-blown brass", "Table · 4 m Calacatta"],
     align: "right",
     time: 7.4,
@@ -62,10 +62,10 @@ const CHAPTERS: Chapter[] = [
   {
     id: "kitchen",
     label: "Kitchen",
-    eyebrow: "05 — The Kitchen",
-    title: "A chef's stage,",
-    italic: "cast in marble & brass.",
-    body: "A five-metre island in honed Calacatta, integrated Gaggenau appliances, and warm under-cabinet light that softens at dusk.",
+    eyebrow: "05 — One More Room",
+    title: "Before we go —",
+    italic: "the chef's stage.",
+    body: "A five-metre honed island, integrated Gaggenau, and warm under-cabinet light that softens at dusk. When you're ready, I'll meet you at the door.",
     bullets: ["Island · 5 m", "Appliances · Gaggenau", "Fixtures · solid brass"],
     align: "left",
     time: 9.9,
@@ -293,13 +293,6 @@ export function HeroVideo() {
     tweenVideoTo(CHAPTERS[active].time);
   }, [active, videoSrc, videoReady, tweenVideoTo]);
 
-  const jumpTo = (idx: number) => {
-    const section = sectionRef.current;
-    if (!section) return;
-    const target = section.offsetTop + idx * window.innerHeight;
-    window.scrollTo({ top: target, behavior: "smooth" });
-  };
-
   const chapter = CHAPTERS[active];
 
   const alignClass =
@@ -336,17 +329,17 @@ export function HeroVideo() {
           <div className="absolute inset-0 bg-gradient-to-r from-background/45 via-transparent to-background/20" />
 
           {/* Top bar */}
-          <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-8 py-8 md:px-16 md:py-10">
-            <span className="text-xs font-medium uppercase tracking-[0.4em] text-foreground/85">
+          <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-5 py-6 md:px-16 md:py-10">
+            <span className="text-[10px] font-medium uppercase tracking-[0.35em] text-foreground/85 md:text-xs md:tracking-[0.4em]">
               Maison · Dubai
             </span>
             <span className="hidden text-xs uppercase tracking-[0.4em] text-foreground/65 md:block">
-              A cinematic journey
+              With Amira Hassan
             </span>
           </div>
 
           {/* Chapter copy — fades between steps */}
-          <div className="pointer-events-none absolute inset-0 z-10 flex px-8 pb-32 pt-28 md:px-16 md:pb-36">
+          <div className="pointer-events-none absolute inset-0 z-10 flex px-5 pb-48 pt-20 md:px-16 md:pb-36 md:pt-28">
             <div className={`flex w-full flex-col justify-center ${alignClass}`}>
               <AnimatePresence mode="wait">
                 <motion.div
@@ -357,15 +350,15 @@ export function HeroVideo() {
                   transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
                   className="max-w-2xl"
                 >
-                  <div className="mb-4 text-xs uppercase tracking-[0.5em] text-gold">
+                  <div className="mb-3 text-[10px] uppercase tracking-[0.35em] text-gold md:mb-4 md:text-xs md:tracking-[0.5em]">
                     {chapter.eyebrow}
                   </div>
-                  <h2 className="font-display text-[clamp(2.5rem,7vw,6.5rem)] leading-[0.95] text-foreground">
+                  <h2 className="font-display text-[clamp(2rem,9vw,6.5rem)] leading-[0.95] text-foreground">
                     {chapter.title}
                     <br />
                     <span className="italic gradient-gold-text">{chapter.italic}</span>
                   </h2>
-                  <p className="mt-6 max-w-md text-sm leading-relaxed text-foreground/80">
+                  <p className="mt-5 max-w-md text-[13px] leading-relaxed text-foreground/80 md:mt-6 md:text-sm">
                     {chapter.body}
                   </p>
 
@@ -394,92 +387,73 @@ export function HeroVideo() {
             </div>
           </div>
 
-          {/* Bottom stats + advisor (only inside the residence) */}
-          <AnimatePresence>
-            {active >= 2 && (
+          {/* Bottom — advisor card on chapter 0 (intro), stats inside residence */}
+          <AnimatePresence mode="wait">
+            {active === 0 ? (
+              <motion.div
+                key="advisor-intro"
+                initial={{ opacity: 0, y: 28 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -16 }}
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute inset-x-0 bottom-0 z-20 px-5 pb-8 md:px-16 md:pb-14"
+              >
+                <div className="mx-auto flex max-w-md items-center gap-4 rounded-sm border border-border/40 bg-background/60 p-4 backdrop-blur-md md:mx-0 md:max-w-lg md:gap-5 md:p-5">
+                  <img
+                    src={advisorImg}
+                    alt="Amira Hassan, private advisor"
+                    width={64}
+                    height={64}
+                    className="h-14 w-14 flex-none rounded-full object-cover md:h-16 md:w-16"
+                  />
+                  <div className="flex-1">
+                    <div className="text-[9px] uppercase tracking-[0.3em] text-gold md:text-[10px]">
+                      Your private advisor
+                    </div>
+                    <div className="mt-1 font-display text-lg text-foreground md:text-xl">
+                      Amira Hassan
+                    </div>
+                    <div className="mt-0.5 text-[11px] text-foreground/70 md:text-xs">
+                      DIFC · 12 years · speaks AR · EN · FR
+                    </div>
+                  </div>
+                  <a
+                    href="#contact"
+                    className="hidden whitespace-nowrap rounded-sm border border-gold/60 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.25em] text-gold transition-colors hover:bg-gold/10 sm:block"
+                  >
+                    Meet me
+                  </a>
+                </div>
+                <p className="mx-auto mt-3 max-w-md text-center text-[11px] uppercase tracking-[0.3em] text-foreground/50 md:mx-0 md:text-left">
+                  Scroll — I'll show you the residence
+                </p>
+              </motion.div>
+            ) : (
               <motion.div
                 key="bottombar"
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 24 }}
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-8 pb-10 md:px-16 md:pb-14"
+                className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-5 pb-8 md:px-16 md:pb-14"
               >
-                <div className="flex flex-col items-end gap-4 md:flex-row md:items-end md:justify-between">
-                  <div className="grid grid-cols-3 gap-6 border-t border-border/50 pt-5 md:min-w-[420px]">
-                    <div>
-                      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">From</div>
-                      <div className="mt-2 font-display text-2xl text-foreground">$8.4M</div>
-                    </div>
-                    <div>
-                      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Sky m²</div>
-                      <div className="mt-2 font-display text-2xl text-foreground">640</div>
-                    </div>
-                    <div>
-                      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Level</div>
-                      <div className="mt-2 font-display text-2xl text-foreground">84F</div>
-                    </div>
+                <div className="grid grid-cols-3 gap-4 border-t border-border/50 pt-4 md:max-w-[480px] md:gap-6 md:pt-5">
+                  <div>
+                    <div className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground md:text-[10px]">From</div>
+                    <div className="mt-1 font-display text-xl text-foreground md:mt-2 md:text-2xl">$8.4M</div>
                   </div>
-
-                  <div className="flex items-center gap-4 rounded-sm border border-border/40 bg-background/50 p-4 backdrop-blur-md">
-                    <img
-                      src={advisorImg}
-                      alt="Amira Hassan"
-                      width={48}
-                      height={48}
-                      className="h-12 w-12 rounded-full object-cover"
-                    />
-                    <div className="flex-1">
-                      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-                        Private viewing with
-                      </div>
-                      <div className="font-display text-base text-foreground">Amira Hassan</div>
-                    </div>
-                    <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-gold">
-                      By appointment
-                    </div>
+                  <div>
+                    <div className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground md:text-[10px]">Sky m²</div>
+                    <div className="mt-1 font-display text-xl text-foreground md:mt-2 md:text-2xl">640</div>
+                  </div>
+                  <div>
+                    <div className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground md:text-[10px]">Level</div>
+                    <div className="mt-1 font-display text-xl text-foreground md:mt-2 md:text-2xl">84F</div>
                   </div>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
-
-          {/* Chapter progress indicator — clickable */}
-          <nav
-            aria-label="Chapter navigation"
-            className="absolute right-6 top-1/2 z-30 -translate-y-1/2 md:right-10"
-          >
-            <ul className="flex flex-col gap-5">
-              {CHAPTERS.map((c, i) => {
-                const isActive = i === active;
-                return (
-                  <li key={c.id}>
-                    <button
-                      onClick={() => jumpTo(i)}
-                      className="group flex items-center gap-3"
-                      aria-label={`Jump to ${c.label}`}
-                      aria-current={isActive ? "step" : undefined}
-                    >
-                      <span
-                        className={`font-mono text-[10px] uppercase tracking-[0.3em] transition-colors ${
-                          isActive ? "text-gold" : "text-foreground/40 group-hover:text-foreground/80"
-                        }`}
-                      >
-                        {String(i + 1).padStart(2, "0")} · {c.label}
-                      </span>
-                      <span className="relative block h-px w-8 overflow-hidden bg-foreground/20">
-                        <motion.span
-                          className="absolute inset-y-0 left-0 bg-gold"
-                          animate={{ width: isActive ? "100%" : "0%" }}
-                          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                        />
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
         </div>
       </section>
     </>

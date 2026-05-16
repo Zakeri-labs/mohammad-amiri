@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { RevealText } from "./RevealText";
 
@@ -24,6 +24,15 @@ export function ParallaxScene({
   index,
 }: ParallaxSceneProps) {
   const ref = useRef<HTMLElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
@@ -37,53 +46,59 @@ export function ParallaxScene({
   const numberOpacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 0.15, 0.15, 0]);
 
   return (
-    <section ref={ref} className="relative h-[140vh] w-full overflow-hidden bg-background">
+    <section ref={ref} className="relative h-screen w-full overflow-hidden bg-background md:h-[140vh]">
       {/* Background layer — slow parallax */}
-      <motion.div style={{ y: bgY, scale: bgScale }} className="absolute inset-0 -top-[15%] h-[130%] w-full">
+      <motion.div
+        style={isMobile ? undefined : { y: bgY, scale: bgScale }}
+        className="absolute inset-0 h-full w-full md:-top-[15%] md:h-[130%]"
+      >
         <img
           src={image}
           alt={title}
           loading="lazy"
+          decoding="async"
           width={1920}
           height={1280}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover object-center"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/10 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/20 to-background md:from-background/60 md:via-background/10" />
         <div
           className={
             align === "left"
-              ? "absolute inset-0 bg-gradient-to-r from-background/85 via-background/30 to-transparent"
-              : "absolute inset-0 bg-gradient-to-l from-background/85 via-background/30 to-transparent"
+              ? "absolute inset-0 bg-gradient-to-r from-background/90 via-background/50 to-background/20 md:via-background/30 md:to-transparent"
+              : "absolute inset-0 bg-gradient-to-l from-background/90 via-background/50 to-background/20 md:via-background/30 md:to-transparent"
           }
         />
       </motion.div>
 
-      {/* Giant index number — foreground, fast parallax */}
+      {/* Giant index number — desktop only (too heavy on mobile) */}
       <motion.div
         style={{ y: numberY, opacity: numberOpacity }}
-        className={`pointer-events-none absolute top-1/2 ${align === "left" ? "right-[-4%]" : "left-[-4%]"} -translate-y-1/2 font-display text-[28vw] leading-none text-gold`}
+        className={`pointer-events-none absolute top-1/2 hidden -translate-y-1/2 font-display text-[28vw] leading-none text-gold md:block ${
+          align === "left" ? "right-[-4%]" : "left-[-4%]"
+        }`}
       >
         {String(index).padStart(2, "0")}
       </motion.div>
 
       {/* Midground card — opposite parallax */}
       <motion.div
-        style={{ y: cardY }}
-        className={`sticky top-0 flex h-screen items-center px-8 md:px-20 ${align === "right" ? "justify-end" : "justify-start"}`}
+        style={isMobile ? undefined : { y: cardY }}
+        className={`sticky top-0 flex h-screen items-center px-5 md:px-20 ${align === "right" ? "justify-end" : "justify-start"}`}
       >
-        <div className={`relative z-10 max-w-xl ${align === "right" ? "text-right" : "text-left"}`}>
-          <RevealText className="mb-5 text-xs uppercase tracking-[0.5em] text-gold">
+        <div className={`relative z-10 max-w-xl ${align === "right" ? "md:text-right" : "text-left"}`}>
+          <RevealText className="mb-4 text-[10px] uppercase tracking-[0.35em] text-gold md:mb-5 md:text-xs md:tracking-[0.5em]">
             {eyebrow}
           </RevealText>
-          <RevealText delay={0.1} as="h2" className="font-display text-[clamp(2.5rem,6vw,5.5rem)] leading-[0.95] text-foreground">
+          <RevealText delay={0.1} as="h2" className="font-display text-[clamp(2.25rem,7vw,5.5rem)] leading-[0.95] text-foreground">
             {title}
           </RevealText>
           {titleItalic && (
-            <RevealText delay={0.2} as="h2" className="font-display italic text-[clamp(2.5rem,6vw,5.5rem)] leading-[0.95] gradient-gold-text">
+            <RevealText delay={0.2} as="h2" className="font-display italic text-[clamp(2.25rem,7vw,5.5rem)] leading-[0.95] gradient-gold-text">
               {titleItalic}
             </RevealText>
           )}
-          <RevealText delay={0.35} as="p" className="mt-8 text-base leading-relaxed text-foreground/75 text-balance">
+          <RevealText delay={0.35} as="p" className="mt-6 text-[13px] leading-relaxed text-foreground/75 text-balance md:mt-8 md:text-base">
             {description}
           </RevealText>
 
@@ -92,14 +107,14 @@ export function ParallaxScene({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
             transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className={`mt-10 grid grid-cols-3 gap-6 border-t border-border/50 pt-6 ${align === "right" ? "text-right" : "text-left"}`}
+            className={`mt-8 grid grid-cols-3 gap-4 border-t border-border/50 pt-5 md:mt-10 md:gap-6 md:pt-6 ${align === "right" ? "md:text-right" : "text-left"}`}
           >
             {meta.map((m) => (
               <div key={m.label}>
-                <dt className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+                <dt className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground md:text-[10px]">
                   {m.label}
                 </dt>
-                <dd className="mt-2 font-display text-2xl text-foreground">{m.value}</dd>
+                <dd className="mt-1.5 font-display text-xl text-foreground md:mt-2 md:text-2xl">{m.value}</dd>
               </div>
             ))}
           </motion.dl>
