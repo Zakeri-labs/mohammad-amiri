@@ -136,44 +136,79 @@ export function HeroVideo() {
     };
   }, [videoSrc]);
 
-  // Snap-by-scroll: each wheel/swipe/key event advances ONE chapter,
-  // regardless of how much was scrolled. At the boundaries the page
-  // scrolls naturally to the previous/next section.
+  // Tall scroll-snap section: each chapter occupies one viewport slot.
+  // A wheel/swipe/key event SNAPS scroll position to the next slot —
+  // exactly one chapter per gesture, regardless of scroll amount.
   const activeRef = useRef(active);
   useEffect(() => {
     activeRef.current = active;
   }, [active]);
 
+  // Track active chapter from scroll position (so jumpTo / natural scroll work).
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const rect = section.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const scrolled = Math.min(
+          Math.max(-rect.top, 0),
+          section.offsetHeight - vh
+        );
+        const idx = Math.min(
+          CHAPTERS.length - 1,
+          Math.max(0, Math.round(scrolled / vh))
+        );
+        setActive((prev) => (prev === idx ? prev : idx));
+        ticking = false;
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  // Snap one chapter per gesture by intercepting wheel/key/touch.
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
     let lastAt = 0;
-    const COOLDOWN = 950; // matches tween duration
+    const COOLDOWN = 950;
     let touchStartY = 0;
-    let enteredFromBelow = false;
 
-    const isLocked = () => {
+    const isInside = () => {
       const rect = section.getBoundingClientRect();
-      // section fully covers the viewport
-      return rect.top <= 1 && rect.bottom >= window.innerHeight - 1;
+      // sticky stage is active: top <=0 and we still have room below
+      return rect.top <= 0 && rect.bottom > window.innerHeight;
+    };
+
+    const snapTo = (idx: number) => {
+      const target = section.offsetTop + idx * window.innerHeight;
+      window.scrollTo({ top: target, behavior: "smooth" });
     };
 
     const tryAdvance = (dir: 1 | -1, e: Event) => {
-      if (!isLocked()) return;
+      if (!isInside()) return;
       const cur = activeRef.current;
-      const atEnd = dir > 0 && cur >= CHAPTERS.length - 1;
-      const atStart = dir < 0 && cur <= 0;
-      if (atEnd || atStart) {
-        // release: let the page scroll naturally out of the section
-        return;
-      }
+      const next = cur + dir;
+      // At the boundary in the scroll direction → release so the page
+      // can scroll naturally into the section before/after.
+      if (next < 0 || next > CHAPTERS.length - 1) return;
       e.preventDefault();
       e.stopPropagation();
       const now = performance.now();
       if (now - lastAt < COOLDOWN) return;
       lastAt = now;
-      setActive((p) => Math.max(0, Math.min(CHAPTERS.length - 1, p + dir)));
+      snapTo(next);
     };
 
     const onWheel = (e: WheelEvent) => {
@@ -181,7 +216,7 @@ export function HeroVideo() {
       tryAdvance(e.deltaY > 0 ? 1 : -1, e);
     };
     const onKey = (e: KeyboardEvent) => {
-      if (!isLocked()) return;
+      if (!isInside()) return;
       if (e.key === "ArrowDown" || e.key === "PageDown" || e.key === " ") {
         tryAdvance(1, e);
       } else if (e.key === "ArrowUp" || e.key === "PageUp") {
@@ -199,36 +234,15 @@ export function HeroVideo() {
       touchStartY = y;
     };
 
-    // When the section re-enters the viewport from below (user scrolled
-    // back up), start at the last chapter so the next wheel-up advances
-    // backwards smoothly.
-    const onScroll = () => {
-      const rect = section.getBoundingClientRect();
-      const fullyBelow = rect.top >= window.innerHeight;
-      const fullyAbove = rect.bottom <= 0;
-      if (fullyBelow) {
-        enteredFromBelow = false;
-        activeRef.current = 0;
-        setActive(0);
-      } else if (fullyAbove) {
-        enteredFromBelow = true;
-        activeRef.current = CHAPTERS.length - 1;
-        setActive(CHAPTERS.length - 1);
-      }
-    };
-
     window.addEventListener("wheel", onWheel, { passive: false, capture: true });
     window.addEventListener("keydown", onKey, { capture: true });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchmove", onTouchMove, { passive: false });
-    window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.removeEventListener("wheel", onWheel, { capture: true } as never);
       window.removeEventListener("keydown", onKey, { capture: true } as never);
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("scroll", onScroll);
-      void enteredFromBelow;
     };
   }, []);
 
@@ -239,7 +253,10 @@ export function HeroVideo() {
   }, [active, videoSrc, videoReady, tweenVideoTo]);
 
   const jumpTo = (idx: number) => {
-    setActive(Math.max(0, Math.min(CHAPTERS.length - 1, idx)));
+    const section = sectionRef.current;
+    if (!section) return;
+    const target = section.offsetTop + idx * window.innerHeight;
+    window.scrollTo({ top: target, behavior: "smooth" });
   };
 
   const chapter = CHAPTERS[active];
@@ -258,7 +275,7 @@ export function HeroVideo() {
       <section
         ref={sectionRef}
         className="relative w-full"
-        style={{ height: `100vh` }}
+        style={{ height: `${CHAPTERS.length * 100}vh` }}
       >
         {/* Sticky stage — one fixed viewport for the whole journey */}
         <div className="sticky top-0 h-screen w-full overflow-hidden bg-background">
