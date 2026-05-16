@@ -94,12 +94,42 @@ export function HeroVideo() {
     const start = v.currentTime;
     const distance = target - start;
 
-    // Going backward (or essentially in place): seek and pause.
-    if (distance <= 0.05) {
+    // Essentially in place: just snap.
+    if (Math.abs(distance) <= 0.05) {
       try {
         v.pause();
         v.currentTime = Math.max(0, target);
       } catch {}
+      return;
+    }
+
+    // Going backward: HTML5 video can't play in reverse, so we step
+    // currentTime backward in small chunks via rAF. Small steps land close
+    // to keyframes and look like a smooth rewind.
+    if (distance < 0) {
+      try {
+        v.pause();
+      } catch {}
+      const rewindMs = 1400; // total time to rewind
+      const startedAt = performance.now();
+      const from = start;
+      const ease = (t: number) =>
+        t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      const stepBack = (now: number) => {
+        const p = Math.min(1, (now - startedAt) / rewindMs);
+        const t = from + (target - from) * ease(p);
+        try {
+          v.currentTime = Math.max(0, t);
+        } catch {}
+        if (p < 1) tweenRef.current = requestAnimationFrame(stepBack);
+        else {
+          try {
+            v.currentTime = Math.max(0, target);
+          } catch {}
+          tweenRef.current = null;
+        }
+      };
+      tweenRef.current = requestAnimationFrame(stepBack);
       return;
     }
 
