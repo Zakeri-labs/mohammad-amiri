@@ -324,9 +324,10 @@ export function HeroVideo() {
             />
           )}
 
-          {/* Vignette */}
-          <div className="absolute inset-0 bg-gradient-to-b from-background/55 via-transparent to-background/85" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/45 via-transparent to-background/20" />
+          {/* Vignette — stronger to keep titles & body legible over moving video */}
+          <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/20 to-background/95" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-background/10 to-background/40" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.45)_100%)]" />
 
           {/* Top bar */}
           <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-5 py-6 md:px-16 md:py-10">
@@ -349,6 +350,7 @@ export function HeroVideo() {
                   exit={{ opacity: 0, y: -20, filter: "blur(8px)" }}
                   transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
                   className="max-w-2xl"
+                  style={{ textShadow: "0 2px 28px rgba(0,0,0,0.7), 0 1px 4px rgba(0,0,0,0.5)" }}
                 >
                   <div className="mb-3 text-[10px] uppercase tracking-[0.35em] text-gold md:mb-4 md:text-xs md:tracking-[0.5em]">
                     {chapter.eyebrow}
