@@ -30,27 +30,17 @@ const CHAPTERS: Chapter[] = [
   {
     id: "approach",
     label: "Approach",
-    eyebrow: "02 — Approaching",
+    eyebrow: "02 — Arrival",
     title: "Through the glass,",
-    italic: "into the silence.",
-    body: "A private elevator opens at the 112th floor. The city falls quiet.",
-    align: "center",
-    time: 2.6,
-  },
-  {
-    id: "arrival",
-    label: "Arrival",
-    eyebrow: "03 — Arrival",
-    title: "The doors part —",
     italic: "the sky opens.",
-    body: "Soft light spills across honed stone as the residence reveals itself, one frame at a time.",
+    body: "A private elevator opens at the 112th floor. The doors part — soft light spills across honed stone as the residence reveals itself.",
     align: "center",
     time: 3.8,
   },
   {
     id: "living",
     label: "Living",
-    eyebrow: "04 — Living Room",
+    eyebrow: "03 — Living Room",
     title: "Welcome home,",
     italic: "the sky room — yours.",
     body: "Bookmatched marble, hand-rubbed bronze, and a 270° view of a city written in light.",
@@ -61,7 +51,7 @@ const CHAPTERS: Chapter[] = [
   {
     id: "dining",
     label: "Dining",
-    eyebrow: "05 — Dining",
+    eyebrow: "04 — Dining",
     title: "A table for",
     italic: "twelve, in the sky.",
     body: "A four-metre Calacatta table beneath hand-blown brass pendants — dinners staged against the Dubai skyline.",
@@ -72,7 +62,7 @@ const CHAPTERS: Chapter[] = [
   {
     id: "kitchen",
     label: "Kitchen",
-    eyebrow: "06 — The Kitchen",
+    eyebrow: "05 — The Kitchen",
     title: "A chef's stage,",
     italic: "cast in marble & brass.",
     body: "A five-metre island in honed Calacatta, integrated Gaggenau appliances, and warm under-cabinet light that softens at dusk.",
@@ -104,12 +94,42 @@ export function HeroVideo() {
     const start = v.currentTime;
     const distance = target - start;
 
-    // Going backward (or essentially in place): seek and pause.
-    if (distance <= 0.05) {
+    // Essentially in place: just snap.
+    if (Math.abs(distance) <= 0.05) {
       try {
         v.pause();
         v.currentTime = Math.max(0, target);
       } catch {}
+      return;
+    }
+
+    // Going backward: HTML5 video can't play in reverse, so we step
+    // currentTime backward in small chunks via rAF. Small steps land close
+    // to keyframes and look like a smooth rewind.
+    if (distance < 0) {
+      try {
+        v.pause();
+      } catch {}
+      const rewindMs = 1400; // total time to rewind
+      const startedAt = performance.now();
+      const from = start;
+      const ease = (t: number) =>
+        t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      const stepBack = (now: number) => {
+        const p = Math.min(1, (now - startedAt) / rewindMs);
+        const t = from + (target - from) * ease(p);
+        try {
+          v.currentTime = Math.max(0, t);
+        } catch {}
+        if (p < 1) tweenRef.current = requestAnimationFrame(stepBack);
+        else {
+          try {
+            v.currentTime = Math.max(0, target);
+          } catch {}
+          tweenRef.current = null;
+        }
+      };
+      tweenRef.current = requestAnimationFrame(stepBack);
       return;
     }
 
