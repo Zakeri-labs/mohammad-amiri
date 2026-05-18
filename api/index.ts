@@ -9,8 +9,11 @@
 // @ts-expect-error — resolved at deploy time after `vite build` runs
 import handler from "../dist/server/server.js";
 
+// Use Node.js runtime (not Edge) — the TanStack Start SSR bundle references
+// modules like tailwind-merge, @tanstack/router-core/ssr/*, and h3-v2/srvx
+// that Vercel's Edge bundler cannot resolve. Node runtime handles them fine.
 export const config = {
-  runtime: "edge",
+  runtime: "nodejs",
 };
 
 export default async function vercelHandler(request: Request): Promise<Response> {

@@ -31,6 +31,8 @@ publish). A parallel Vercel setup is also configured.
   contract as Cloudflare Workers — no code in `src/server.ts` had to change.
 - Local `vite dev` and Lovable preview are unaffected: the Cloudflare plugin
   only runs during `vite build`, and only when `VERCEL` is not set.
-- If you later add server functions that rely on Node-only APIs (e.g. `fs`,
-  `child_process`), switch the Edge function in `api/index.ts` to the Node
-  runtime by removing `export const config = { runtime: "edge" }`.
+- `api/index.ts` runs on the **Node.js runtime** (not Edge). The TanStack
+  Start SSR bundle references modules (tailwind-merge, h3, router-core SSR
+  helpers) that Vercel's Edge bundler can't resolve, so Node runtime is the
+  correct target. To switch to Edge later you would need to pre-bundle the
+  SSR output with all deps inlined.
