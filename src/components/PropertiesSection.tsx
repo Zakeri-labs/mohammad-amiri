@@ -41,25 +41,25 @@ export function PropertiesSection() {
   );
 
   return (
-    <section id="properties" className="relative w-full bg-background px-5 py-24 md:px-16 md:py-36">
+    <section id="properties" className="relative w-full bg-background px-5 py-16 md:px-16 md:py-24">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-12 max-w-2xl md:mb-16">
-          <RevealText className="mb-5 text-[10px] uppercase tracking-[0.4em] text-gold md:text-xs md:tracking-[0.5em]">
+        <div className="mb-8 max-w-2xl md:mb-10">
+          <RevealText className="mb-3 text-[10px] uppercase tracking-[0.4em] text-gold md:text-xs md:tracking-[0.5em]">
             {data.eyebrow}
           </RevealText>
-          <RevealText as="h2" className="font-display text-[clamp(2rem,6vw,4.5rem)] leading-[1.02] text-foreground">
+          <RevealText as="h2" className="font-display text-[clamp(1.9rem,5vw,3.6rem)] leading-[1.05] text-foreground">
             {data.titleA}
           </RevealText>
-          <RevealText delay={0.1} as="h2" className="font-display italic text-[clamp(2rem,6vw,4.5rem)] leading-[1.02] gradient-gold-text">
+          <RevealText delay={0.1} as="h2" className="font-display italic text-[clamp(1.9rem,5vw,3.6rem)] leading-[1.05] gradient-gold-text">
             {data.titleB}
           </RevealText>
-          <RevealText delay={0.25} as="p" className="mt-6 max-w-xl text-sm leading-relaxed text-foreground/70 md:text-base">
+          <RevealText delay={0.25} as="p" className="mt-4 max-w-xl text-sm leading-relaxed text-foreground/70 md:text-[15px]">
             {data.body}
           </RevealText>
         </div>
 
         {/* Filter rail */}
-        <div className="mb-10 flex flex-wrap items-center gap-3 border-y border-border/40 py-5 md:mb-14 md:gap-6 md:py-6">
+        <div className="sticky top-[68px] z-30 mb-8 -mx-5 flex flex-wrap items-center gap-2.5 border-y border-border/40 bg-background/85 px-5 py-3.5 backdrop-blur-xl md:top-[84px] md:mb-10 md:-mx-16 md:gap-5 md:px-16 md:py-4">
           <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
             {data.filters.area}
           </span>
