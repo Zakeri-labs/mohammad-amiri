@@ -292,15 +292,23 @@ html.lang-fa .font-display,
 html[lang="fa"] .font-display {
   font-family: var(--font-fa) !important;
   font-weight: 800;
-  letter-spacing: -0.01em;
+  /* Arabic/Persian scripts must keep natural letter-spacing —
+     any tracking breaks the connecting ligatures. */
+  letter-spacing: 0 !important;
+  word-spacing: 0.05em;
 }
 html.lang-fa .font-mono,
 html[lang="fa"] .font-mono {
   font-family: var(--font-fa) !important;
   font-weight: 600;
+  letter-spacing: 0 !important;
 }
 html.lang-fa .italic,
 html[lang="fa"] .italic {
   font-style: normal !important;
   font-weight: 900;
+  letter-spacing: 0 !important;
+}
+html[dir="rtl"] [class*="tracking-"] {
+  letter-spacing: 0 !important;
 }
