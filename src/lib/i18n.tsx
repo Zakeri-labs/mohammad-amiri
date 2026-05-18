@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { Languages } from "lucide-react";
 
 export type Lang = "fa" | "en";
 
@@ -408,11 +409,11 @@ export function LangToggle({ className = "" }: { className?: string }) {
     <button
       type="button"
       onClick={() => setLang(lang === "fa" ? "en" : "fa")}
-      className={`inline-flex items-center gap-1.5 rounded-sm border border-gold/50 px-3.5 py-2.5 font-mono text-[11px] uppercase tracking-[0.25em] text-gold transition-colors hover:bg-gold/10 md:px-4 md:py-3 md:text-xs ${className}`}
+      className={`inline-flex items-center gap-2 rounded-full border border-gold/60 px-4 py-2.5 font-display text-[13px] text-gold transition-all hover:bg-gold/10 md:px-5 md:py-3 md:text-[14px] ${className}`}
       aria-label="Toggle language"
     >
-      <span aria-hidden>🌐</span>
-      <span>{lang === "fa" ? "EN" : "فارسی"}</span>
+      <Languages className="h-4 w-4" strokeWidth={2} />
+      <span>{lang === "fa" ? "English" : "فارسی"}</span>
     </button>
   );
 }
