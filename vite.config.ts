@@ -6,9 +6,15 @@
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+// On Vercel, disable the Cloudflare Workers build plugin so Vite emits a
+// standard SSR build (dist/client + dist/server) that the Vercel Edge
+// function in /api can boot. Locally and on Lovable, keep Cloudflare.
+const isVercel = !!process.env.VERCEL;
+
 // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
 // @cloudflare/vite-plugin builds from this — wrangler.jsonc main alone is insufficient.
 export default defineConfig({
+  cloudflare: isVercel ? false : undefined,
   tanstackStart: {
     server: { entry: "server" },
   },
