@@ -14,10 +14,10 @@ export function RevealText({ children, delay = 0, className, as = "div" }: Revea
     <div className="overflow-hidden">
       <MotionTag
         className={className}
-        initial={{ y: "110%", opacity: 0 }}
+        initial={{ y: "60%", opacity: 0 }}
         whileInView={{ y: "0%", opacity: 1 }}
-        viewport={{ once: true, margin: "-10%" }}
-        transition={{ duration: 1.1, delay, ease: [0.22, 1, 0.36, 1] }}
+        viewport={{ once: true, amount: 0.01 }}
+        transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
       >
         {children}
       </MotionTag>

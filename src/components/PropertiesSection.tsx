@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { motion } from "motion/react";
+import { MapPin, Home as HomeIcon, RotateCcw } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { RevealText } from "./RevealText";
 import skyline from "@/assets/dubai-skyline.jpg";
@@ -43,7 +44,8 @@ export function PropertiesSection() {
   return (
     <section id="properties" className="relative w-full bg-background px-5 py-16 md:px-16 md:py-24">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-8 max-w-2xl md:mb-10">
+        <div className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between md:gap-10">
+          <div className="max-w-2xl">
           <RevealText className="mb-3 text-[10px] uppercase tracking-[0.4em] text-gold md:text-xs md:tracking-[0.5em]">
             {data.eyebrow}
           </RevealText>
@@ -56,25 +58,44 @@ export function PropertiesSection() {
           <RevealText delay={0.25} as="p" className="mt-4 max-w-xl text-sm leading-relaxed text-foreground/70 md:text-[15px]">
             {data.body}
           </RevealText>
+          </div>
+          <div className="flex shrink-0 items-baseline gap-2 font-mono text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
+            <span className="font-display text-3xl text-gold md:text-4xl">{filtered.length}</span>
+            <span>/ {items.length}</span>
+          </div>
         </div>
 
-        {/* Filter rail */}
-        <div className="sticky top-[68px] z-30 mb-8 -mx-5 flex flex-wrap items-center gap-2.5 border-y border-border/40 bg-background/85 px-5 py-3.5 backdrop-blur-xl md:top-[84px] md:mb-10 md:-mx-16 md:gap-5 md:px-16 md:py-4">
-          <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-            {data.filters.area}
-          </span>
-          <FilterChip label={data.filters.all} active={area === "__all"} onClick={() => setArea("__all")} />
-          {areas.map((a) => (
-            <FilterChip key={a} label={a} active={area === a} onClick={() => setArea(a)} />
-          ))}
-          <span className="mx-2 hidden h-4 w-px bg-border md:block" />
-          <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-            {data.filters.type}
-          </span>
-          <FilterChip label={data.filters.all} active={type === "__all"} onClick={() => setType("__all")} />
-          {types.map((tp) => (
-            <FilterChip key={tp} label={tp} active={type === tp} onClick={() => setType(tp)} />
-          ))}
+        {/* Filter card */}
+        <div className="sticky top-[72px] z-30 mb-8 rounded-md border border-border/60 bg-card/80 p-4 backdrop-blur-xl md:top-[88px] md:mb-12 md:p-5">
+          <div className="flex flex-col gap-4 md:flex-row md:items-stretch md:gap-6">
+            <FilterGroup
+              icon={<MapPin className="h-3.5 w-3.5" />}
+              label={data.filters.area}
+              options={["__all", ...areas]}
+              allLabel={data.filters.all}
+              active={area}
+              onChange={setArea}
+            />
+            <div className="hidden w-px shrink-0 bg-border/60 md:block" />
+            <FilterGroup
+              icon={<HomeIcon className="h-3.5 w-3.5" />}
+              label={data.filters.type}
+              options={["__all", ...types]}
+              allLabel={data.filters.all}
+              active={type}
+              onChange={setType}
+            />
+            {(area !== "__all" || type !== "__all") && (
+              <button
+                type="button"
+                onClick={() => { setArea("__all"); setType("__all"); }}
+                className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-sm border border-border/60 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground transition-colors hover:border-gold/50 hover:text-gold md:self-center"
+              >
+                <RotateCcw className="h-3 w-3" />
+                Reset
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Grid */}
@@ -133,14 +154,49 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-sm border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.25em] transition-colors ${
+      className={`rounded-sm border px-3 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.2em] transition-colors ${
         active
-          ? "border-gold bg-gold/15 text-gold"
+          ? "border-gold bg-gold text-primary-foreground"
           : "border-border/60 text-foreground/70 hover:border-gold/50 hover:text-gold"
       }`}
     >
       {label}
     </button>
+  );
+}
+
+function FilterGroup({
+  icon,
+  label,
+  options,
+  allLabel,
+  active,
+  onChange,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  options: string[];
+  allLabel: string;
+  active: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div className="flex flex-1 flex-col gap-2.5">
+      <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-gold/80">
+        <span className="text-gold">{icon}</span>
+        <span>{label}</span>
+      </div>
+      <div className="flex flex-wrap items-center gap-1.5">
+        {options.map((opt) => (
+          <FilterChip
+            key={opt}
+            label={opt === "__all" ? allLabel : opt}
+            active={active === opt}
+            onClick={() => onChange(opt)}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
