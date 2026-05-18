@@ -173,38 +173,55 @@ export function HeroVideo() {
     if (!section) return;
 
     let lastAt = 0;
-    const COOLDOWN = 950;
+    const COOLDOWN = 1100;
     let touchStartY = 0;
+    // Trackpad inertia produces a long tail of wheel events after the
+    // user's flick. We only want ONE advance per gesture — so we lock
+    // out new advances until the wheel goes quiet for ~120ms.
+    let lastWheelAt = 0;
+    let wheelDirLocked: 0 | 1 | -1 = 0;
+    let isAnimating = false;
 
     const isInside = () => {
       const rect = section.getBoundingClientRect();
-      // sticky stage is active: top <=0 and we still have room below
       return rect.top <= 0 && rect.bottom > window.innerHeight;
     };
 
     const snapTo = (idx: number) => {
       const target = section.offsetTop + idx * window.innerHeight;
+      isAnimating = true;
       window.scrollTo({ top: target, behavior: "smooth" });
+      window.setTimeout(() => { isAnimating = false; }, COOLDOWN);
     };
 
     const tryAdvance = (dir: 1 | -1, e: Event) => {
       if (!isInside()) return;
       const cur = activeRef.current;
       const next = cur + dir;
-      // At the boundary in the scroll direction → release so the page
-      // can scroll naturally into the section before/after.
       if (next < 0 || next > CHAPTERS.length - 1) return;
       e.preventDefault();
       e.stopPropagation();
       const now = performance.now();
-      if (now - lastAt < COOLDOWN) return;
+      if (now - lastAt < COOLDOWN || isAnimating) return;
       lastAt = now;
       snapTo(next);
     };
 
     const onWheel = (e: WheelEvent) => {
+      if (!isInside()) return;
+      const now = performance.now();
+      const dir: 1 | -1 = e.deltaY > 0 ? 1 : -1;
+
+      // Treat events <120ms apart as the same gesture.
+      if (now - lastWheelAt < 120 && wheelDirLocked === dir) {
+        e.preventDefault();
+        lastWheelAt = now;
+        return;
+      }
+      wheelDirLocked = dir;
+      lastWheelAt = now;
       if (Math.abs(e.deltaY) < 2) return;
-      tryAdvance(e.deltaY > 0 ? 1 : -1, e);
+      tryAdvance(dir, e);
     };
     const onKey = (e: KeyboardEvent) => {
       if (!isInside()) return;
