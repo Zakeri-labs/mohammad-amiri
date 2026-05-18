@@ -66,12 +66,27 @@ export function VideoPreloader({ src, onReady }: Props) {
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background"
         >
-          <div className="mb-10 text-center">
+          <div className="mb-10 max-w-md px-6 text-center">
             <div className="mb-3 text-xs uppercase tracking-[0.5em] text-gold">
-              Maison · Dubai
+              {isFa ? "محمد امیری · املاک دبی" : "Mohammad Amiri · Dubai"}
             </div>
-            <div className="font-display text-3xl italic text-foreground/90 md:text-4xl">
-              Preparing your cinematic journey
+            <div className="font-display text-3xl text-foreground md:text-4xl">
+              {isFa ? (
+                <>
+                  در حال آماده‌سازی
+                  <br />
+                  <span className="italic gradient-gold-text">خانه‌ی رؤیایی شما در دبی</span>
+                </>
+              ) : (
+                <>
+                  Unlocking the doors to
+                  <br />
+                  <span className="italic gradient-gold-text">your Dubai residence</span>
+                </>
+              )}
+            </div>
+            <div className="mt-4 text-[11px] uppercase tracking-[0.35em] text-foreground/55">
+              {isFa ? "RERA ۸۰۹۷۸ · مرجع رسمی" : "RERA 80978 · Certified Broker"}
             </div>
           </div>
 
