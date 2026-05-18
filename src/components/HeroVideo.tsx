@@ -1,78 +1,28 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import heroVideo from "@/assets/dubai-journey.mp4.asset.json";
-import advisorImg from "@/assets/advisor-amira.jpg";
+import advisorImg from "@/assets/advisor-mohammad.jpg";
 import { VideoPreloader } from "./VideoPreloader";
+import { useT, LangToggle } from "@/lib/i18n";
 
 type Chapter = {
   id: string;
-  label: string;
-  eyebrow: string;
-  title: string;
-  italic: string;
-  body: string;
-  bullets?: string[];
   align: "left" | "right" | "center";
   time: number; // video timestamp at chapter end
 };
 
 const CHAPTERS: Chapter[] = [
-  {
-    id: "burj",
-    label: "Meet Amira",
-    eyebrow: "Hosted by Amira Hassan",
-    title: "Hello —",
-    italic: "I'm Amira.",
-    body: "For twelve years I've placed families into the quiet corners of Dubai. Let me walk you through one of mine — a sky residence above the Burj, told the way I'd show it to a friend.",
-    align: "left",
-    time: 0.1,
-  },
-  {
-    id: "approach",
-    label: "Arrival",
-    eyebrow: "02 — Up to the 112th",
-    title: "Step in with me,",
-    italic: "the sky opens.",
-    body: "A private elevator, a quiet pause, and the doors part. This is the moment I love most — when the city falls silent and the light does the talking.",
-    align: "center",
-    time: 3.8,
-  },
-  {
-    id: "living",
-    label: "Living",
-    eyebrow: "03 — The Sky Room",
-    title: "Sit a moment —",
-    italic: "the room is yours.",
-    body: "I chose this residence for one reason: the 270° turn from sunrise to skyline. Bookmatched Calacatta, hand-rubbed bronze, and a horizon that never repeats.",
-    bullets: ["Ceilings · 4.2 m", "View · 270°", "Marble · Calacatta"],
-    align: "left",
-    time: 5,
-  },
-  {
-    id: "dining",
-    label: "Dining",
-    eyebrow: "04 — At My Table",
-    title: "Stay for dinner,",
-    italic: "the city is the view.",
-    body: "A four-metre Calacatta table under hand-blown brass — this is where I host my owners on the night they collect their keys. You're invited too.",
-    bullets: ["Seats · 12", "Pendants · hand-blown brass", "Table · 4 m Calacatta"],
-    align: "right",
-    time: 7.4,
-  },
-  {
-    id: "kitchen",
-    label: "Kitchen",
-    eyebrow: "05 — One More Room",
-    title: "Before we go —",
-    italic: "the chef's stage.",
-    body: "A five-metre honed island, integrated Gaggenau, and warm under-cabinet light that softens at dusk. When you're ready, I'll meet you at the door.",
-    bullets: ["Island · 5 m", "Appliances · Gaggenau", "Fixtures · solid brass"],
-    align: "left",
-    time: 9.9,
-  },
+  { id: "intro", align: "left", time: 0.1 },
+  { id: "approach", align: "center", time: 3.8 },
+  { id: "living", align: "left", time: 5 },
+  { id: "dining", align: "right", time: 7.4 },
+  { id: "kitchen", align: "left", time: 9.9 },
 ];
 
 export function HeroVideo() {
+  const { t, lang } = useT();
+  const chapters = t<any[]>("chapters");
+  const stats = t<{ label: string; value: string }[]>("stats");
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const tweenRef = useRef<number | null>(null);
@@ -293,12 +243,13 @@ export function HeroVideo() {
     tweenVideoTo(CHAPTERS[active].time);
   }, [active, videoSrc, videoReady, tweenVideoTo]);
 
-  const chapter = CHAPTERS[active];
+  const meta = CHAPTERS[active];
+  const chapter = chapters[active];
 
   const alignClass =
-    chapter.align === "right"
+    meta.align === "right"
       ? "items-end text-right"
-      : chapter.align === "center"
+      : meta.align === "center"
       ? "items-center text-center"
       : "items-start text-left";
 
@@ -332,11 +283,14 @@ export function HeroVideo() {
           {/* Top bar */}
           <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-5 py-6 md:px-16 md:py-10">
             <span className="text-[10px] font-medium uppercase tracking-[0.35em] text-foreground/85 md:text-xs md:tracking-[0.4em]">
-              Maison · Dubai
+              {t<string>("brand")}
             </span>
-            <span className="hidden text-xs uppercase tracking-[0.4em] text-foreground/65 md:block">
-              With Amira Hassan
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="hidden text-xs uppercase tracking-[0.4em] text-foreground/65 md:block">
+                {t<string>("rera")}
+              </span>
+              <LangToggle />
+            </div>
           </div>
 
           {/* Chapter copy — fades between steps */}
@@ -344,7 +298,7 @@ export function HeroVideo() {
             <div className={`flex w-full flex-col justify-center ${alignClass}`}>
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={chapter.id}
+                  key={`${meta.id}-${lang}`}
                   initial={{ opacity: 0, y: 28, filter: "blur(8px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   exit={{ opacity: 0, y: -20, filter: "blur(8px)" }}
@@ -367,13 +321,13 @@ export function HeroVideo() {
                   {chapter.bullets && (
                     <ul
                       className={`mt-8 flex flex-col gap-2 text-sm text-foreground/85 ${
-                        chapter.align === "right" ? "ml-auto items-end" : ""
+                        meta.align === "right" ? "ml-auto items-end" : ""
                       }`}
                     >
-                      {chapter.bullets.map((b, i) => (
+                      {chapter.bullets.map((b: string, i: number) => (
                         <motion.li
                           key={b}
-                          initial={{ opacity: 0, x: chapter.align === "right" ? 16 : -16 }}
+                          initial={{ opacity: 0, x: meta.align === "right" ? 16 : -16 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 0.35 + i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                           className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.25em] text-foreground/70"
@@ -403,31 +357,31 @@ export function HeroVideo() {
                 <div className="mx-auto flex max-w-md items-center gap-4 rounded-sm border border-border/40 bg-background/60 p-4 backdrop-blur-md md:mx-0 md:max-w-lg md:gap-5 md:p-5">
                   <img
                     src={advisorImg}
-                    alt="Amira Hassan, private advisor"
+                    alt={t<string>("advisorName")}
                     width={64}
                     height={64}
                     className="h-14 w-14 flex-none rounded-full object-cover md:h-16 md:w-16"
                   />
                   <div className="flex-1">
                     <div className="text-[9px] uppercase tracking-[0.3em] text-gold md:text-[10px]">
-                      Your private advisor
+                      {t<string>("yourAdvisor")}
                     </div>
                     <div className="mt-1 font-display text-lg text-foreground md:text-xl">
-                      Amira Hassan
+                      {t<string>("advisorName")}
                     </div>
                     <div className="mt-0.5 text-[11px] text-foreground/70 md:text-xs">
-                      DIFC · 12 years · speaks AR · EN · FR
+                      {t<string>("advisorRoleShort")}
                     </div>
                   </div>
                   <a
                     href="#contact"
                     className="hidden whitespace-nowrap rounded-sm border border-gold/60 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.25em] text-gold transition-colors hover:bg-gold/10 sm:block"
                   >
-                    Meet me
+                    {t<string>("meetMe")}
                   </a>
                 </div>
                 <p className="mx-auto mt-3 max-w-md text-center text-[11px] uppercase tracking-[0.3em] text-foreground/50 md:mx-0 md:text-left">
-                  Scroll — I'll show you the residence
+                  {t<string>("scrollHint")}
                 </p>
               </motion.div>
             ) : (
@@ -440,18 +394,12 @@ export function HeroVideo() {
                 className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-5 pb-8 md:px-16 md:pb-14"
               >
                 <div className="grid grid-cols-3 gap-4 border-t border-border/50 pt-4 md:max-w-[480px] md:gap-6 md:pt-5">
-                  <div>
-                    <div className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground md:text-[10px]">From</div>
-                    <div className="mt-1 font-display text-xl text-foreground md:mt-2 md:text-2xl">$8.4M</div>
-                  </div>
-                  <div>
-                    <div className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground md:text-[10px]">Sky m²</div>
-                    <div className="mt-1 font-display text-xl text-foreground md:mt-2 md:text-2xl">640</div>
-                  </div>
-                  <div>
-                    <div className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground md:text-[10px]">Level</div>
-                    <div className="mt-1 font-display text-xl text-foreground md:mt-2 md:text-2xl">84F</div>
-                  </div>
+                  {stats.map((s) => (
+                    <div key={s.label}>
+                      <div className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground md:text-[10px]">{s.label}</div>
+                      <div className="mt-1 font-display text-xl text-foreground md:mt-2 md:text-2xl">{s.value}</div>
+                    </div>
+                  ))}
                 </div>
               </motion.div>
             )}
