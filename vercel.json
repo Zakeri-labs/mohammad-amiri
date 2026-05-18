@@ -4,6 +4,7 @@
   "outputDirectory": "dist/client",
   "framework": null,
   "rewrites": [
+    { "source": "/__l5e/:path*", "destination": "https://dubai-dream-scroll.lovable.app/__l5e/:path*" },
     { "source": "/((?!assets/|favicon\\.ico|.*\\.[a-zA-Z0-9]+$).*)", "destination": "/api" }
   ]
 }
