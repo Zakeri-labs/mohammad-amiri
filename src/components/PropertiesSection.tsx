@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
-import { motion } from "motion/react";
-import { MapPin, Home as HomeIcon, RotateCcw, DollarSign } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { MapPin, Home as HomeIcon, RotateCcw, DollarSign, SlidersHorizontal, ChevronUp } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { RevealText } from "./RevealText";
 import { Slider } from "@/components/ui/slider";
@@ -41,6 +41,41 @@ export function PropertiesSection() {
   const [type, setType] = useState<string>("__all");
   const [priceRange, setPriceRange] = useState<[number, number]>(priceBounds);
 
+  // Sticky-collapse behavior. We watch a sentinel placed just above the
+  // filter card; when it scrolls out of view, the filter is "stuck" and we
+  // auto-collapse to a slim pill to give the property grid more room.
+  // The user can expand on tap; any subsequent scroll re-collapses it.
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const [isStuck, setIsStuck] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      ([entry]) => setIsStuck(!entry.isIntersecting),
+      { threshold: 0, rootMargin: "-72px 0px 0px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Auto-collapse on scroll while expanded + stuck.
+  useEffect(() => {
+    if (!expanded || !isStuck) return;
+    let last = window.scrollY;
+    const onScroll = () => {
+      if (Math.abs(window.scrollY - last) > 80) setExpanded(false);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [expanded, isStuck]);
+
+  // When un-sticking (filter card back in its natural place), force expanded.
+  useEffect(() => {
+    if (!isStuck) setExpanded(false);
+  }, [isStuck]);
+
   const filtered = useMemo(
     () =>
       items.filter(
@@ -60,6 +95,8 @@ export function PropertiesSection() {
     setType("__all");
     setPriceRange(priceBounds);
   };
+  const activeCount = (area !== "__all" ? 1 : 0) + (type !== "__all" ? 1 : 0) + (priceActive ? 1 : 0);
+  const collapsed = isStuck && !expanded;
   const formatPrice = (n: number) => {
     const inMillions = n / 1_000_000;
     const num = inMillions >= 1 ? `${inMillions.toFixed(inMillions >= 10 ? 0 : 1)}M` : `${Math.round(n / 1000)}K`;
@@ -91,8 +128,40 @@ export function PropertiesSection() {
           </div>
         </div>
 
+        {/* Sentinel — drives isStuck detection */}
+        <div ref={sentinelRef} aria-hidden className="h-px w-full" />
+
         {/* Filter card */}
-        <div className="sticky top-[72px] z-30 mb-10 rounded-2xl border border-border/60 bg-card/85 p-5 shadow-[0_20px_60px_-30px_rgba(0,0,0,0.6)] backdrop-blur-xl md:top-[88px] md:mb-14 md:p-7">
+        <motion.div
+          layout
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          className={`sticky top-[64px] z-30 mb-10 overflow-hidden border border-border/60 bg-card/90 shadow-[0_20px_60px_-30px_rgba(0,0,0,0.6)] backdrop-blur-xl md:top-[80px] md:mb-14 ${
+            collapsed ? "rounded-full p-2" : "rounded-2xl p-5 md:p-7"
+          }`}
+        >
+          {collapsed ? (
+            <button
+              type="button"
+              onClick={() => setExpanded(true)}
+              className="flex w-full items-center justify-between gap-3 rounded-full px-3 py-1.5 text-foreground/85 transition-colors hover:text-gold"
+              aria-label="Expand filters"
+            >
+              <span className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-gold">
+                <SlidersHorizontal className="h-3.5 w-3.5" />
+                <span>{data.filters.area} · {data.filters.type} · {data.filters.price}</span>
+              </span>
+              <span className="inline-flex items-center gap-2">
+                {activeCount > 0 && (
+                  <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1.5 font-mono text-[10px] font-bold text-black">
+                    {activeCount}
+                  </span>
+                )}
+                <span className="font-display text-sm text-gold">{filtered.length}</span>
+                <span className="font-mono text-[10px] text-muted-foreground">/ {items.length}</span>
+              </span>
+            </button>
+          ) : (
+            <>
           <div className="grid gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-[1fr_1fr_1.2fr]">
             <FilterGroup
               icon={<MapPin className="h-3.5 w-3.5" />}
@@ -135,8 +204,8 @@ export function PropertiesSection() {
               </div>
             </div>
           </div>
-          {anyActive && (
-            <div className="mt-5 flex justify-end border-t border-border/50 pt-4">
+          <div className="mt-5 flex items-center justify-between gap-3 border-t border-border/50 pt-4">
+            {anyActive ? (
               <button
                 type="button"
                 onClick={resetAll}
@@ -145,9 +214,22 @@ export function PropertiesSection() {
                 <RotateCcw className="h-3 w-3" />
                 {data.filters.reset}
               </button>
-            </div>
+            ) : <span />}
+            {isStuck && (
+              <button
+                type="button"
+                onClick={() => setExpanded(false)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-gold/60 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.25em] text-gold transition-colors hover:bg-gold/10"
+                aria-label="Collapse filters"
+              >
+                <ChevronUp className="h-3 w-3" />
+                {data.filters.reset === "بازنشانی" ? "بستن" : "Collapse"}
+              </button>
+            )}
+          </div>
+            </>
           )}
-        </div>
+        </motion.div>
 
         {/* Grid */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:gap-8 lg:grid-cols-3">
