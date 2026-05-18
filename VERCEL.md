@@ -9,8 +9,8 @@ publish). A parallel Vercel setup is also configured.
   Vite plugin, so `vite build` emits a standard SSR bundle:
   - `dist/client/` — static client assets
   - `dist/server/server.js` — Web-standard `{ fetch(request, env, ctx) }` SSR handler
-- `api/index.ts` is a **Vercel Edge function** that imports that SSR handler
-  and forwards every dynamic request to it.
+- `api/index.ts` is a **Vercel Node.js function** that imports that SSR handler
+  and forwards every dynamic request to it with an absolute URL.
 - `vercel.json` rewrites every non-asset path to `/api`, so SSR runs for all
   routes while static files in `dist/client/` are served directly.
 
@@ -27,8 +27,8 @@ publish). A parallel Vercel setup is also configured.
 
 ## Notes
 
-- Vercel Edge runtime is Web-standard (Request/Response, `fetch`), the same
-  contract as Cloudflare Workers — no code in `src/server.ts` had to change.
+- Vercel may pass request URLs as paths like `/`; the adapter normalizes them
+  to absolute URLs before handing them to the SSR server.
 - Local `vite dev` and Lovable preview are unaffected: the Cloudflare plugin
   only runs during `vite build`, and only when `VERCEL` is not set.
 - `api/index.ts` runs on the **Node.js runtime** (not Edge). The TanStack
