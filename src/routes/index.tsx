@@ -6,6 +6,7 @@ import { HorizontalMarquee } from "@/components/HorizontalMarquee";
 import { RevealText } from "@/components/RevealText";
 import { PropertiesSection } from "@/components/PropertiesSection";
 import { AgencySection } from "@/components/AgencySection";
+import { motion } from "motion/react";
 import skyline from "@/assets/dubai-skyline.jpg";
 import palm from "@/assets/dubai-palm.jpg";
 import penthouse from "@/assets/dubai-penthouse.jpg";
@@ -37,19 +38,53 @@ function Index() {
       <HeroVideo />
 
       {/* Advisor intro */}
-      <section className="relative w-full bg-background px-5 py-20 md:px-16 md:py-32">
-        <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-[1fr_1.4fr] md:items-center md:gap-16">
+      <section className="relative w-full overflow-hidden bg-background px-5 py-24 md:px-16 md:py-36">
+        {/* Animated blurred backdrop */}
+        <div className="pointer-events-none absolute inset-0 -z-0">
+          <motion.div
+            initial={{ opacity: 0, scale: 1.05 }}
+            whileInView={{ opacity: 0.35, scale: 1 }}
+            viewport={{ once: false, margin: "-20%" }}
+            transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${advisor})`, filter: "blur(38px) saturate(1.1)" }}
+          />
+          <motion.div
+            aria-hidden
+            animate={{
+              background: [
+                "radial-gradient(60% 50% at 20% 30%, oklch(0.78 0.13 78 / 0.18), transparent 60%)",
+                "radial-gradient(60% 50% at 80% 70%, oklch(0.78 0.13 78 / 0.22), transparent 60%)",
+                "radial-gradient(60% 50% at 20% 30%, oklch(0.78 0.13 78 / 0.18), transparent 60%)",
+              ],
+            }}
+            transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute inset-0"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background" />
+        </div>
+
+        <div className="relative mx-auto grid max-w-6xl gap-10 md:grid-cols-[1fr_1.4fr] md:items-center md:gap-16">
           <div className="relative">
-            <img
-              src={advisor}
-              alt={t<string>("advisorName")}
-              loading="lazy"
-              decoding="async"
-              width={800}
-              height={1000}
-              className="aspect-[4/5] w-full rounded-sm object-cover"
-            />
-            <div className="pointer-events-none absolute inset-0 rounded-sm ring-1 ring-inset ring-gold/20" />
+            <motion.div
+              initial={{ opacity: 0, y: 30, filter: "blur(12px)" }}
+              whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              viewport={{ once: true, margin: "-10%" }}
+              transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+              className="relative"
+            >
+              <img
+                src={advisor}
+                alt={t<string>("advisorName")}
+                loading="lazy"
+                decoding="async"
+                width={800}
+                height={1000}
+                className="aspect-[4/5] w-full rounded-sm object-cover shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]"
+              />
+              <div className="pointer-events-none absolute inset-0 rounded-sm ring-1 ring-inset ring-gold/30" />
+              <div className="pointer-events-none absolute -inset-3 -z-10 rounded-sm bg-gold/15 blur-2xl" />
+            </motion.div>
           </div>
           <div>
             <RevealText className="mb-5 text-[10px] uppercase tracking-[0.4em] text-gold md:text-xs md:tracking-[0.5em]">
@@ -61,7 +96,7 @@ function Index() {
             <RevealText delay={0.12} as="h2" className="font-display italic text-[clamp(2rem,6vw,4.5rem)] leading-[1.02] gradient-gold-text">
               {advisorData.tag}
             </RevealText>
-            <RevealText delay={0.28} as="p" className="mt-6 max-w-xl text-sm leading-relaxed text-foreground/75 md:mt-8 md:text-base">
+            <RevealText delay={0.28} as="p" className="mt-6 max-w-xl text-sm leading-relaxed text-foreground/85 md:mt-8 md:text-base">
               {advisorData.bio}
             </RevealText>
 
