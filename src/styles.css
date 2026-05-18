@@ -238,6 +238,15 @@
   .text-gold {
     color: var(--gold);
   }
+  .bg-gold {
+    background-color: var(--gold);
+  }
+  .border-gold {
+    border-color: var(--gold);
+  }
+  .hover\:bg-gold\/90:hover {
+    background-color: color-mix(in oklab, var(--gold) 90%, transparent);
+  }
   .bg-night {
     background: var(--night);
   }
