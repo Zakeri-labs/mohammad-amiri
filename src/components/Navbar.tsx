@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
 import { LangToggle, useT } from "@/lib/i18n";
-import { CalendarCheck } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 export function Navbar() {
   const { t, lang } = useT();
@@ -30,10 +30,14 @@ export function Navbar() {
           </span>
           <a
             href="#contact"
-            className="group inline-flex items-center gap-2 rounded-sm border border-gold bg-gold px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.2em] text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.78_0.13_78/0.7)] transition-all hover:bg-gold/90 hover:shadow-[0_12px_30px_-8px_oklch(0.78_0.13_78/0.9)] md:px-6 md:py-3.5 md:text-[12px]"
+            className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full bg-gold py-2.5 ps-4 pe-2.5 text-primary-foreground transition-all hover:shadow-[0_18px_40px_-12px_oklch(0.78_0.13_78/0.85)] md:py-3 md:ps-5 md:pe-3"
           >
-            <CalendarCheck className="h-4 w-4" />
-            <span>{lang === "fa" ? "رزرو مشاوره" : "Book Consultant"}</span>
+            <span className="font-display text-[13px] tracking-tight md:text-[15px]">
+              {lang === "fa" ? "رزرو مشاوره" : "Book a consultation"}
+            </span>
+            <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary-foreground/15 transition-transform group-hover:rotate-45 md:h-8 md:w-8">
+              <ArrowUpRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
+            </span>
           </a>
           <LangToggle />
         </div>
