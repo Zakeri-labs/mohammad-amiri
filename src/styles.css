@@ -220,28 +220,12 @@
     scroll-behavior: smooth;
   }
 
-  html.lang-fa body,
-  html[lang="fa"] body {
-    font-family: var(--font-fa);
-    font-weight: 400;
-  }
-  html.lang-fa .font-display,
-  html[lang="fa"] .font-display {
-    font-family: var(--font-fa);
-    font-weight: 800;
-    letter-spacing: -0.015em;
-  }
-  html.lang-fa .italic,
-  html[lang="fa"] .italic {
-    font-style: normal;
-    font-weight: 900;
-  }
   html[dir="rtl"] .tracking-\[0\.5em\],
   html[dir="rtl"] .tracking-\[0\.4em\],
   html[dir="rtl"] .tracking-\[0\.35em\],
   html[dir="rtl"] .tracking-\[0\.3em\],
   html[dir="rtl"] .tracking-\[0\.25em\] {
-    letter-spacing: 0.08em;
+    letter-spacing: 0.05em;
   }
 }
 
@@ -266,4 +250,29 @@
     background-clip: text;
     color: transparent;
   }
+}
+
+/* Farsi typography overrides — placed outside layers so they win over
+   utility classes like .font-display / .italic without !important. */
+html.lang-fa,
+html.lang-fa body,
+html[lang="fa"] body {
+  font-family: var(--font-fa);
+  font-weight: 400;
+}
+html.lang-fa .font-display,
+html[lang="fa"] .font-display {
+  font-family: var(--font-fa) !important;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+html.lang-fa .font-mono,
+html[lang="fa"] .font-mono {
+  font-family: var(--font-fa) !important;
+  font-weight: 600;
+}
+html.lang-fa .italic,
+html[lang="fa"] .italic {
+  font-style: normal !important;
+  font-weight: 900;
 }

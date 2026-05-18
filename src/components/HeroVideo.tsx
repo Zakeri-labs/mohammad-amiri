@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import heroVideo from "@/assets/dubai-journey.mp4.asset.json";
 import advisorImg from "@/assets/advisor-mohammad.jpg";
 import { VideoPreloader } from "./VideoPreloader";
-import { useT, LangToggle } from "@/lib/i18n";
+import { useT } from "@/lib/i18n";
 
 type Chapter = {
   id: string;
@@ -297,18 +297,7 @@ export function HeroVideo() {
           <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-background/10 to-background/40" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.45)_100%)]" />
 
-          {/* Top bar */}
-          <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-5 py-6 md:px-16 md:py-10">
-            <span className="text-[10px] font-medium uppercase tracking-[0.35em] text-foreground/85 md:text-xs md:tracking-[0.4em]">
-              {t<string>("brand")}
-            </span>
-            <div className="flex items-center gap-3">
-              <span className="hidden text-xs uppercase tracking-[0.4em] text-foreground/65 md:block">
-                {t<string>("rera")}
-              </span>
-              <LangToggle />
-            </div>
-          </div>
+          {/* Top bar is provided globally by the fixed <Navbar />. */}
 
           {/* Chapter copy — fades between steps */}
           <div className="pointer-events-none absolute inset-0 z-10 flex px-5 pb-48 pt-20 md:px-16 md:pb-36 md:pt-28">

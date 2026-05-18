@@ -13,6 +13,8 @@ import "@fontsource/vazirmatn/400.css";
 import "@fontsource/vazirmatn/500.css";
 import "@fontsource/vazirmatn/600.css";
 import { LanguageProvider } from "@/lib/i18n";
+import { Navbar } from "@/components/Navbar";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 
 function NotFoundComponent() {
   return (
@@ -125,7 +127,9 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
+        <Navbar />
         <Outlet />
+        <WhatsAppButton />
       </LanguageProvider>
     </QueryClientProvider>
   );
