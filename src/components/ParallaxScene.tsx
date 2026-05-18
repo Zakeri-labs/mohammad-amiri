@@ -90,7 +90,7 @@ export function ParallaxScene({
         className={`sticky top-0 flex h-screen items-center px-5 md:px-20 ${align === "right" ? "justify-end" : "justify-start"}`}
       >
         <div
-          className={`relative z-10 max-w-xl ${align === "right" ? "md:text-right" : "text-left"}`}
+          className={`relative z-10 max-w-xl ${align === "right" ? "md:text-end" : "text-start"}`}
           style={{ textShadow: "0 2px 24px rgba(0,0,0,0.55)" }}
         >
           <RevealText className="mb-4 text-[10px] uppercase tracking-[0.35em] text-gold md:mb-5 md:text-xs md:tracking-[0.5em]">
@@ -113,7 +113,7 @@ export function ParallaxScene({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
             transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className={`mt-8 grid grid-cols-3 gap-4 border-t border-border/50 pt-5 md:mt-10 md:gap-6 md:pt-6 ${align === "right" ? "md:text-right" : "text-left"}`}
+            className={`mt-8 grid grid-cols-3 gap-4 border-t border-border/50 pt-5 md:mt-10 md:gap-6 md:pt-6 ${align === "right" ? "md:text-end" : "text-start"}`}
           >
             {meta.map((m) => (
               <div key={m.label}>
