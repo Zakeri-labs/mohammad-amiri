@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import { MapPin, Home as HomeIcon, RotateCcw, DollarSign, SlidersHorizontal, ChevronUp } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { RevealText } from "./RevealText";
