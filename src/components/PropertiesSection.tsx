@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
 import { motion } from "motion/react";
-import { MapPin, Home as HomeIcon, RotateCcw } from "lucide-react";
+import { MapPin, Home as HomeIcon, RotateCcw, DollarSign } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { RevealText } from "./RevealText";
+import { Slider } from "@/components/ui/slider";
 import skyline from "@/assets/dubai-skyline.jpg";
 import palm from "@/assets/dubai-palm.jpg";
 import penthouse from "@/assets/dubai-penthouse.jpg";
@@ -18,46 +19,71 @@ type Item = {
   bedrooms: string;
   sqm: string;
   price: string;
+  priceUsd: number;
   handover: string;
 };
 
 export function PropertiesSection() {
-  const { t } = useT();
+  const { t, lang } = useT();
   const data = t<any>("properties");
   const items = data.items as Item[];
   const areas: string[] = data.areas;
   const types: string[] = data.types;
 
+  const priceBounds = useMemo(() => {
+    const prices = items.map((it) => it.priceUsd);
+    const min = Math.floor(Math.min(...prices) / 100_000) * 100_000;
+    const max = Math.ceil(Math.max(...prices) / 100_000) * 100_000;
+    return [min, max] as [number, number];
+  }, [items]);
+
   const [area, setArea] = useState<string>("__all");
   const [type, setType] = useState<string>("__all");
+  const [priceRange, setPriceRange] = useState<[number, number]>(priceBounds);
 
   const filtered = useMemo(
     () =>
       items.filter(
         (it) =>
           (area === "__all" || it.area === area) &&
-          (type === "__all" || it.type === type),
+          (type === "__all" || it.type === type) &&
+          it.priceUsd >= priceRange[0] &&
+          it.priceUsd <= priceRange[1],
       ),
-    [items, area, type],
+    [items, area, type, priceRange],
   );
+
+  const priceActive = priceRange[0] !== priceBounds[0] || priceRange[1] !== priceBounds[1];
+  const anyActive = area !== "__all" || type !== "__all" || priceActive;
+  const resetAll = () => {
+    setArea("__all");
+    setType("__all");
+    setPriceRange(priceBounds);
+  };
+  const formatPrice = (n: number) => {
+    const inMillions = n / 1_000_000;
+    const num = inMillions >= 1 ? `${inMillions.toFixed(inMillions >= 10 ? 0 : 1)}M` : `${Math.round(n / 1000)}K`;
+    const localized = lang === "fa" ? num.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[Number(d)]) : num;
+    return `$${localized}`;
+  };
 
   return (
     <section id="properties" className="relative w-full bg-background px-5 py-16 md:px-16 md:py-24">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between md:gap-10">
           <div className="max-w-2xl">
-          <RevealText className="mb-3 text-[10px] uppercase tracking-[0.4em] text-gold md:text-xs md:tracking-[0.5em]">
-            {data.eyebrow}
-          </RevealText>
-          <RevealText as="h2" className="font-display text-[clamp(1.9rem,5vw,3.6rem)] leading-[1.05] text-foreground">
-            {data.titleA}
-          </RevealText>
-          <RevealText delay={0.1} as="h2" className="font-display italic text-[clamp(1.9rem,5vw,3.6rem)] leading-[1.05] gradient-gold-text">
-            {data.titleB}
-          </RevealText>
-          <RevealText delay={0.25} as="p" className="mt-4 max-w-xl text-sm leading-relaxed text-foreground/70 md:text-[15px]">
-            {data.body}
-          </RevealText>
+            <RevealText className="mb-3 text-[10px] uppercase tracking-[0.4em] text-gold md:text-xs md:tracking-[0.5em]">
+              {data.eyebrow}
+            </RevealText>
+            <RevealText as="h2" className="font-display text-[clamp(1.9rem,5vw,3.6rem)] leading-[1.05] text-foreground">
+              {data.titleA}
+            </RevealText>
+            <RevealText delay={0.1} as="h2" className="font-display italic text-[clamp(1.9rem,5vw,3.6rem)] leading-[1.05] gradient-gold-text">
+              {data.titleB}
+            </RevealText>
+            <RevealText delay={0.25} as="p" className="mt-4 max-w-xl text-sm leading-relaxed text-foreground/70 md:text-[15px]">
+              {data.body}
+            </RevealText>
           </div>
           <div className="flex shrink-0 items-baseline gap-2 font-mono text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
             <span className="font-display text-3xl text-gold md:text-4xl">{filtered.length}</span>
@@ -66,8 +92,8 @@ export function PropertiesSection() {
         </div>
 
         {/* Filter card */}
-        <div className="sticky top-[72px] z-30 mb-8 rounded-md border border-border/60 bg-card/80 p-4 backdrop-blur-xl md:top-[88px] md:mb-12 md:p-5">
-          <div className="flex flex-col gap-4 md:flex-row md:items-stretch md:gap-6">
+        <div className="sticky top-[72px] z-30 mb-10 rounded-2xl border border-border/60 bg-card/85 p-5 shadow-[0_20px_60px_-30px_rgba(0,0,0,0.6)] backdrop-blur-xl md:top-[88px] md:mb-14 md:p-7">
+          <div className="grid gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-[1fr_1fr_1.2fr]">
             <FilterGroup
               icon={<MapPin className="h-3.5 w-3.5" />}
               label={data.filters.area}
@@ -76,7 +102,6 @@ export function PropertiesSection() {
               active={area}
               onChange={setArea}
             />
-            <div className="hidden w-px shrink-0 bg-border/60 md:block" />
             <FilterGroup
               icon={<HomeIcon className="h-3.5 w-3.5" />}
               label={data.filters.type}
@@ -85,17 +110,43 @@ export function PropertiesSection() {
               active={type}
               onChange={setType}
             />
-            {(area !== "__all" || type !== "__all") && (
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-gold/80">
+                  <DollarSign className="h-3.5 w-3.5 text-gold" />
+                  <span>{data.filters.price}</span>
+                </div>
+                <div className="font-display text-[13px] text-foreground/80">
+                  {formatPrice(priceRange[0])} <span className="text-muted-foreground">—</span> {formatPrice(priceRange[1])}
+                </div>
+              </div>
+              <Slider
+                dir="ltr"
+                min={priceBounds[0]}
+                max={priceBounds[1]}
+                step={100_000}
+                value={priceRange}
+                onValueChange={(v) => setPriceRange([v[0], v[1]] as [number, number])}
+                className="mt-1"
+              />
+              <div className="flex items-center justify-between font-mono text-[9px] uppercase tracking-[0.25em] text-muted-foreground">
+                <span>{formatPrice(priceBounds[0])}</span>
+                <span>{formatPrice(priceBounds[1])}</span>
+              </div>
+            </div>
+          </div>
+          {anyActive && (
+            <div className="mt-5 flex justify-end border-t border-border/50 pt-4">
               <button
                 type="button"
-                onClick={() => { setArea("__all"); setType("__all"); }}
-                className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-sm border border-border/60 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground transition-colors hover:border-gold/50 hover:text-gold md:self-center"
+                onClick={resetAll}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border/60 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground transition-colors hover:border-gold/50 hover:text-gold"
               >
                 <RotateCcw className="h-3 w-3" />
-                Reset
+                {data.filters.reset}
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Grid */}
@@ -154,9 +205,9 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-sm border px-3 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.2em] transition-colors ${
+      className={`rounded-full border px-3.5 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.2em] transition-colors ${
         active
-          ? "border-gold bg-gold text-primary-foreground"
+          ? "border-gold bg-gold text-black"
           : "border-border/60 text-foreground/70 hover:border-gold/50 hover:text-gold"
       }`}
     >

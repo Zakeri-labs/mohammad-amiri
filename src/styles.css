@@ -321,3 +321,16 @@ html[lang="fa"] .italic {
 html[dir="rtl"] [class*="tracking-"] {
   letter-spacing: 0 !important;
 }
+
+/* Persian display headings need more vertical breathing room —
+   descenders and overlapping marks collide at tight leading. */
+html.lang-fa .font-display,
+html[lang="fa"] .font-display {
+  line-height: 1.45 !important;
+}
+html.lang-fa h1.font-display,
+html.lang-fa h2.font-display,
+html[lang="fa"] h1.font-display,
+html[lang="fa"] h2.font-display {
+  line-height: 1.35 !important;
+}
