@@ -265,10 +265,10 @@ export function HeroVideo() {
 
   const alignClass =
     meta.align === "right"
-      ? "items-end text-right"
+      ? "items-end text-end"
       : meta.align === "center"
       ? "items-center text-center"
-      : "items-start text-left";
+      : "items-start text-start";
 
   return (
     <>
@@ -327,7 +327,7 @@ export function HeroVideo() {
                   {chapter.bullets && (
                     <ul
                       className={`mt-8 flex flex-col gap-2 text-sm text-foreground/85 ${
-                        meta.align === "right" ? "ml-auto items-end" : ""
+                        meta.align === "right" ? "ms-auto items-end" : ""
                       }`}
                     >
                       {chapter.bullets.map((b: string, i: number) => (
@@ -386,7 +386,7 @@ export function HeroVideo() {
                     {t<string>("meetMe")}
                   </a>
                 </div>
-                <p className="mx-auto mt-3 max-w-md text-center text-[11px] uppercase tracking-[0.3em] text-foreground/50 md:mx-0 md:text-left">
+                <p className="mx-auto mt-3 max-w-md text-center text-[11px] uppercase tracking-[0.3em] text-foreground/50 md:mx-0 md:text-start">
                   {t<string>("scrollHint")}
                 </p>
               </motion.div>
