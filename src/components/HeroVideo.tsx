@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import heroVideo from "@/assets/dubai-journey.mp4.asset.json";
 import advisorImg from "@/assets/advisor-mohammad.jpg";
 import { VideoPreloader } from "./VideoPreloader";
-import { useT, LangToggle } from "@/lib/i18n";
+import { useT } from "@/lib/i18n";
 
 type Chapter = {
   id: string;
