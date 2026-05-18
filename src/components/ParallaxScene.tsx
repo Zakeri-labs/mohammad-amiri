@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { RevealText } from "./RevealText";
+import { useT } from "@/lib/i18n";
 
 interface ParallaxSceneProps {
   image: string;
@@ -23,6 +24,11 @@ export function ParallaxScene({
   align = "left",
   index,
 }: ParallaxSceneProps) {
+  const { lang } = useT();
+  // In Farsi (RTL) we anchor every scene to the logical start (right edge)
+  // so reading flow stays natural. English keeps the cinematic left/right
+  // variation passed in via `align`.
+  const effectiveAlign: "left" | "right" = lang === "fa" ? "left" : align;
   const ref = useRef<HTMLElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -78,7 +84,7 @@ export function ParallaxScene({
       <motion.div
         style={{ y: numberY, opacity: numberOpacity }}
         className={`pointer-events-none absolute top-1/2 hidden -translate-y-1/2 font-display text-[28vw] leading-none text-gold md:block ${
-          align === "left" ? "right-[-4%]" : "left-[-4%]"
+          effectiveAlign === "left" ? "right-[-4%]" : "left-[-4%]"
         }`}
       >
         {String(index).padStart(2, "0")}
@@ -87,10 +93,10 @@ export function ParallaxScene({
       {/* Midground card — opposite parallax */}
       <motion.div
         style={{ y: cardY }}
-        className={`sticky top-0 flex h-screen items-center px-5 md:px-20 ${align === "right" ? "justify-end" : "justify-start"}`}
+        className={`sticky top-0 flex h-screen items-center px-5 md:px-20 ${effectiveAlign === "right" ? "justify-end" : "justify-start"}`}
       >
         <div
-          className={`relative z-10 max-w-xl ${align === "right" ? "md:text-end" : "text-start"}`}
+          className={`relative z-10 max-w-xl ${effectiveAlign === "right" ? "md:text-end" : "text-start"}`}
           style={{ textShadow: "0 2px 24px rgba(0,0,0,0.55)" }}
         >
           <RevealText className="mb-4 text-[10px] uppercase tracking-[0.35em] text-gold md:mb-5 md:text-xs md:tracking-[0.5em]">
@@ -113,7 +119,7 @@ export function ParallaxScene({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
             transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className={`mt-8 grid grid-cols-3 gap-4 border-t border-border/50 pt-5 md:mt-10 md:gap-6 md:pt-6 ${align === "right" ? "md:text-end" : "text-start"}`}
+            className={`mt-8 grid grid-cols-3 gap-4 border-t border-border/50 pt-5 md:mt-10 md:gap-6 md:pt-6 ${effectiveAlign === "right" ? "md:text-end" : "text-start"}`}
           >
             {meta.map((m) => (
               <div key={m.label}>
