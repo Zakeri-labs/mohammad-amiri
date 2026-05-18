@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
 import { LangToggle, useT } from "@/lib/i18n";
-import { ArrowUpRight } from "lucide-react";
+import { CalendarCheck } from "lucide-react";
 
 export function Navbar() {
   const { t, lang } = useT();
@@ -30,14 +30,10 @@ export function Navbar() {
           </span>
           <a
             href="#contact"
-            className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full bg-gold py-2.5 ps-4 pe-2.5 text-primary-foreground transition-all hover:shadow-[0_18px_40px_-12px_oklch(0.78_0.13_78/0.85)] md:py-3 md:ps-5 md:pe-3"
+            className="group inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2.5 font-display text-[13px] text-black shadow-[0_10px_30px_-10px_oklch(0.78_0.13_78/0.8)] transition-all hover:bg-gold/90 hover:shadow-[0_16px_40px_-10px_oklch(0.78_0.13_78/0.95)] md:px-6 md:py-3 md:text-[15px]"
           >
-            <span className="font-display text-[13px] tracking-tight md:text-[15px]">
-              {lang === "fa" ? "رزرو مشاوره" : "Book a consultation"}
-            </span>
-            <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary-foreground/15 transition-transform group-hover:rotate-45 md:h-8 md:w-8">
-              <ArrowUpRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
-            </span>
+            <CalendarCheck className="h-4 w-4" strokeWidth={2.25} />
+            <span>{lang === "fa" ? "رزرو مشاوره" : "Book a consultation"}</span>
           </a>
           <LangToggle />
         </div>
