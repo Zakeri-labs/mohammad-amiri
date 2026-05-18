@@ -26,8 +26,8 @@ export const dict = {
     chapters: [
       {
         eyebrow: "میزبان: محمد امیری",
-        title: "سلام —",
-        italic: "من محمد امیری‌ام.",
+        title: "سلام،",
+        italic: "من، محمد امیری.",
         body: "مرجع شماره ۱ شما برای سرمایه‌گذاری در املاک دبی. کارشناس رسمی اداره املاک و اراضی دبی (RERA: ۸۰۹۷۸)، نماینده‌ی رسمی شرکت‌های سازنده و تحلیل‌گر بازار. اجازه بدهید یکی از پروژه‌هایم را همان‌طور که برای دوستانم تعریف می‌کنم، به شما نشان دهم.",
       },
       {
@@ -38,7 +38,7 @@ export const dict = {
       },
       {
         eyebrow: "۰۳ — اتاق آسمان",
-        title: "بنشین لحظه‌ای —",
+        title: "بنشین لحظه‌ای،",
         italic: "این اتاق مال توست.",
         body: "این واحد را به یک دلیل انتخاب کردم: چرخش ۲۷۰ درجه از طلوع تا خط افق شهر. مرمر کالاکاتا، برنز دستی، و نمایی که هیچ‌گاه تکرار نمی‌شود.",
         bullets: ["سقف · ۴.۲ متر", "دید · ۲۷۰°", "مرمر · کالاکاتا"],
@@ -52,7 +52,7 @@ export const dict = {
       },
       {
         eyebrow: "۰۵ — یک اتاق دیگر",
-        title: "قبل از رفتن —",
+        title: "قبل از رفتن،",
         italic: "صحنه‌ی آشپز.",
         body: "جزیره‌ی پنج متری، تجهیزات یکپارچه‌ی Gaggenau، و نور گرمی که هنگام غروب نرم می‌شود. هر زمان آماده بودی، دم در منتظرم.",
         bullets: ["جزیره · ۵ متر", "تجهیزات · Gaggenau", "شیرآلات · برنج خالص"],
@@ -65,8 +65,8 @@ export const dict = {
     ],
     advisor: {
       eyebrow: "مشاور شما",
-      hi: "من محمد امیری‌ام.",
-      tag: "خانه نمی‌فروشم — می‌سپارم.",
+      hi: "من، محمد امیری.",
+      tag: "خانه را به شما می‌سپارم.",
       bio: "مرجع شماره ۱ شما برای سرمایه‌گذاری در املاک دبی. کارشناس رسمی اداره‌ی املاک و اراضی دبی با شماره RERA ۸۰۹۷۸، نماینده‌ی رسمی شرکت‌های سازنده‌ی دبی و تحلیل‌گر مستقل بازار. هر معامله را مثل خانه‌ی خودم انتخاب می‌کنم.",
       stats: [
         { label: "RERA", value: "۸۰۹۷۸" },
@@ -76,7 +76,7 @@ export const dict = {
       cta: "شروع یک گفت‌وگوی آرام",
     },
     marquee1: ["انتخاب محمد", "·", "داون‌تاون", "·", "پالم جمیرا", "·", "مارینا", "·", "ذخیره‌گاه کویر", "·"],
-    marquee2: ["رزرو", "—", "بازدید خصوصی با محمد", "—"],
+    marquee2: ["رزرو", "·", "بازدید خصوصی با محمد", "·"],
     scenes: [
       {
         eyebrow: "اول · داون‌تاون",
@@ -151,7 +151,7 @@ export const dict = {
       titleA: "املاک",
       titleB: "منتخب من.",
       body: "پروژه‌هایی که شخصاً بازدید کرده‌ام، با سازنده‌ها مذاکره کرده‌ام و برای سرمایه‌گذاران و خانواده‌ها مناسب می‌دانم. فیلتر کن — همه به‌روز و رسمی.",
-      filters: { all: "همه", area: "منطقه", type: "نوع", any: "همه" },
+      filters: { all: "همه", area: "منطقه", type: "نوع", any: "همه", price: "بازه‌ی قیمت", reset: "بازنشانی", from: "از", to: "تا" },
       areas: ["داون‌تاون", "پالم جمیرا", "مارینا", "بیزنس‌بِی", "جمیرا"],
       types: ["آپارتمان", "پنت‌هاوس", "ویلا", "تاون‌هاوس"],
       cta: "درخواست بازدید خصوصی",
@@ -159,14 +159,14 @@ export const dict = {
       areaLabel: "متراژ m²",
       handover: "تحویل",
       items: [
-        { name: "Burj Royale Sky", area: "داون‌تاون", type: "پنت‌هاوس", bedrooms: "۴", sqm: "۶۴۰", price: "از $۸.۴M", handover: "۲۰۲۶" },
-        { name: "Palm Jewel Villa", area: "پالم جمیرا", type: "ویلا", bedrooms: "۶", sqm: "۱٬۸۲۰", price: "از $۲۲M", handover: "آماده" },
-        { name: "Marina Light Tower", area: "مارینا", type: "آپارتمان", bedrooms: "۲", sqm: "۱۵۸", price: "از $۱.۹M", handover: "۲۰۲۷" },
-        { name: "Bay Residence 12", area: "بیزنس‌بِی", type: "آپارتمان", bedrooms: "۳", sqm: "۲۲۰", price: "از $۲.۸M", handover: "۲۰۲۶" },
-        { name: "Jumeirah Garden Townhouse", area: "جمیرا", type: "تاون‌هاوس", bedrooms: "۴", sqm: "۴۸۰", price: "از $۳.۶M", handover: "آماده" },
-        { name: "Downtown Opera Penthouse", area: "داون‌تاون", type: "پنت‌هاوس", bedrooms: "۵", sqm: "۸۲۰", price: "از $۱۲M", handover: "۲۰۲۶" },
-        { name: "Marina Yacht Loft", area: "مارینا", type: "آپارتمان", bedrooms: "۱", sqm: "۹۸", price: "از $۹۲۰K", handover: "آماده" },
-        { name: "Palm Beachfront Mansion", area: "پالم جمیرا", type: "ویلا", bedrooms: "۷", sqm: "۲٬۴۰۰", price: "از $۳۸M", handover: "۲۰۲۷" },
+        { name: "Burj Royale Sky", area: "داون‌تاون", type: "پنت‌هاوس", bedrooms: "۴", sqm: "۶۴۰", price: "از $۸.۴M", priceUsd: 8400000, handover: "۲۰۲۶" },
+        { name: "Palm Jewel Villa", area: "پالم جمیرا", type: "ویلا", bedrooms: "۶", sqm: "۱٬۸۲۰", price: "از $۲۲M", priceUsd: 22000000, handover: "آماده" },
+        { name: "Marina Light Tower", area: "مارینا", type: "آپارتمان", bedrooms: "۲", sqm: "۱۵۸", price: "از $۱.۹M", priceUsd: 1900000, handover: "۲۰۲۷" },
+        { name: "Bay Residence 12", area: "بیزنس‌بِی", type: "آپارتمان", bedrooms: "۳", sqm: "۲۲۰", price: "از $۲.۸M", priceUsd: 2800000, handover: "۲۰۲۶" },
+        { name: "Jumeirah Garden Townhouse", area: "جمیرا", type: "تاون‌هاوس", bedrooms: "۴", sqm: "۴۸۰", price: "از $۳.۶M", priceUsd: 3600000, handover: "آماده" },
+        { name: "Downtown Opera Penthouse", area: "داون‌تاون", type: "پنت‌هاوس", bedrooms: "۵", sqm: "۸۲۰", price: "از $۱۲M", priceUsd: 12000000, handover: "۲۰۲۶" },
+        { name: "Marina Yacht Loft", area: "مارینا", type: "آپارتمان", bedrooms: "۱", sqm: "۹۸", price: "از $۹۲۰K", priceUsd: 920000, handover: "آماده" },
+        { name: "Palm Beachfront Mansion", area: "پالم جمیرا", type: "ویلا", bedrooms: "۷", sqm: "۲٬۴۰۰", price: "از $۳۸M", priceUsd: 38000000, handover: "۲۰۲۷" },
       ],
     },
     agency: {
@@ -325,7 +325,7 @@ export const dict = {
       titleA: "Selected",
       titleB: "residences.",
       body: "Projects I've toured personally, negotiated directly with developers, and would recommend to my own family. Filter freely — every listing is official and up to date.",
-      filters: { all: "All", area: "Area", type: "Type", any: "Any" },
+      filters: { all: "All", area: "Area", type: "Type", any: "Any", price: "Price range", reset: "Reset", from: "From", to: "To" },
       areas: ["Downtown", "Palm Jumeirah", "Marina", "Business Bay", "Jumeirah"],
       types: ["Apartment", "Penthouse", "Villa", "Townhouse"],
       cta: "Request a private viewing",
@@ -333,14 +333,14 @@ export const dict = {
       areaLabel: "Area m²",
       handover: "Handover",
       items: [
-        { name: "Burj Royale Sky", area: "Downtown", type: "Penthouse", bedrooms: "4", sqm: "640", price: "From $8.4M", handover: "2026" },
-        { name: "Palm Jewel Villa", area: "Palm Jumeirah", type: "Villa", bedrooms: "6", sqm: "1,820", price: "From $22M", handover: "Ready" },
-        { name: "Marina Light Tower", area: "Marina", type: "Apartment", bedrooms: "2", sqm: "158", price: "From $1.9M", handover: "2027" },
-        { name: "Bay Residence 12", area: "Business Bay", type: "Apartment", bedrooms: "3", sqm: "220", price: "From $2.8M", handover: "2026" },
-        { name: "Jumeirah Garden Townhouse", area: "Jumeirah", type: "Townhouse", bedrooms: "4", sqm: "480", price: "From $3.6M", handover: "Ready" },
-        { name: "Downtown Opera Penthouse", area: "Downtown", type: "Penthouse", bedrooms: "5", sqm: "820", price: "From $12M", handover: "2026" },
-        { name: "Marina Yacht Loft", area: "Marina", type: "Apartment", bedrooms: "1", sqm: "98", price: "From $920K", handover: "Ready" },
-        { name: "Palm Beachfront Mansion", area: "Palm Jumeirah", type: "Villa", bedrooms: "7", sqm: "2,400", price: "From $38M", handover: "2027" },
+        { name: "Burj Royale Sky", area: "Downtown", type: "Penthouse", bedrooms: "4", sqm: "640", price: "From $8.4M", priceUsd: 8400000, handover: "2026" },
+        { name: "Palm Jewel Villa", area: "Palm Jumeirah", type: "Villa", bedrooms: "6", sqm: "1,820", price: "From $22M", priceUsd: 22000000, handover: "Ready" },
+        { name: "Marina Light Tower", area: "Marina", type: "Apartment", bedrooms: "2", sqm: "158", price: "From $1.9M", priceUsd: 1900000, handover: "2027" },
+        { name: "Bay Residence 12", area: "Business Bay", type: "Apartment", bedrooms: "3", sqm: "220", price: "From $2.8M", priceUsd: 2800000, handover: "2026" },
+        { name: "Jumeirah Garden Townhouse", area: "Jumeirah", type: "Townhouse", bedrooms: "4", sqm: "480", price: "From $3.6M", priceUsd: 3600000, handover: "Ready" },
+        { name: "Downtown Opera Penthouse", area: "Downtown", type: "Penthouse", bedrooms: "5", sqm: "820", price: "From $12M", priceUsd: 12000000, handover: "2026" },
+        { name: "Marina Yacht Loft", area: "Marina", type: "Apartment", bedrooms: "1", sqm: "98", price: "From $920K", priceUsd: 920000, handover: "Ready" },
+        { name: "Palm Beachfront Mansion", area: "Palm Jumeirah", type: "Villa", bedrooms: "7", sqm: "2,400", price: "From $38M", priceUsd: 38000000, handover: "2027" },
       ],
     },
     agency: {
