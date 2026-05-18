@@ -4,12 +4,15 @@ import { HeroVideo } from "@/components/HeroVideo";
 import { ParallaxScene } from "@/components/ParallaxScene";
 import { HorizontalMarquee } from "@/components/HorizontalMarquee";
 import { RevealText } from "@/components/RevealText";
+import { PropertiesSection } from "@/components/PropertiesSection";
+import { AgencySection } from "@/components/AgencySection";
 import skyline from "@/assets/dubai-skyline.jpg";
 import palm from "@/assets/dubai-palm.jpg";
 import penthouse from "@/assets/dubai-penthouse.jpg";
 import marina from "@/assets/dubai-marina.jpg";
 import desert from "@/assets/dubai-desert.jpg";
-import advisor from "@/assets/advisor-mohammad.jpg";
+import advisor from "@/assets/mohammad-skyline.jpg";
+import advisorAvatar from "@/assets/advisor-mohammad.jpg";
 import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
@@ -84,6 +87,8 @@ function Index() {
 
       <HorizontalMarquee words={marquee1} />
 
+      <PropertiesSection />
+
       {scenes.map((scene, i) => (
         <ParallaxScene
           key={i}
@@ -97,6 +102,8 @@ function Index() {
           align={ALIGNS[i]}
         />
       ))}
+
+      <AgencySection />
 
       <HorizontalMarquee words={marquee2} />
 
@@ -119,7 +126,7 @@ function Index() {
           <div className="flex flex-col justify-end gap-8 text-sm text-foreground/70">
             <div className="flex items-center gap-4 rounded-sm border border-border/40 bg-background/40 p-4 backdrop-blur md:p-5">
               <img
-                src={advisor}
+                src={advisorAvatar}
                 alt={t<string>("advisorName")}
                 width={56}
                 height={56}
