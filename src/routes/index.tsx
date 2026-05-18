@@ -38,7 +38,7 @@ function Index() {
       <HeroVideo />
 
       {/* Advisor intro */}
-      <section className="relative w-full overflow-hidden bg-background px-5 py-24 md:px-16 md:py-36">
+      <section className="relative w-full overflow-hidden bg-background px-5 py-16 md:px-16 md:py-24">
         {/* Animated blurred backdrop */}
         <div className="pointer-events-none absolute inset-0 -z-0">
           <motion.div
@@ -142,8 +142,8 @@ function Index() {
 
       <HorizontalMarquee words={marquee2} />
 
-      <footer id="contact" className="relative border-t border-border/40 bg-background px-5 py-20 md:px-16 md:py-32">
-        <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-2 md:gap-16">
+      <footer id="contact" className="relative border-t border-border/40 bg-background px-5 py-16 md:px-16 md:py-24">
+        <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2 md:gap-14">
           <div>
             <RevealText className="mb-5 text-[10px] uppercase tracking-[0.4em] text-gold md:text-xs md:tracking-[0.5em]">
               {footer.eyebrow}

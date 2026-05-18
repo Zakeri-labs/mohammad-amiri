@@ -408,10 +408,11 @@ export function LangToggle({ className = "" }: { className?: string }) {
     <button
       type="button"
       onClick={() => setLang(lang === "fa" ? "en" : "fa")}
-      className={`rounded-sm border border-gold/50 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.3em] text-gold transition-colors hover:bg-gold/10 ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-sm border border-gold/50 px-3.5 py-2.5 font-mono text-[11px] uppercase tracking-[0.25em] text-gold transition-colors hover:bg-gold/10 md:px-4 md:py-3 md:text-xs ${className}`}
       aria-label="Toggle language"
     >
-      {lang === "fa" ? "EN" : "فا"}
+      <span aria-hidden>🌐</span>
+      <span>{lang === "fa" ? "EN" : "فارسی"}</span>
     </button>
   );
 }

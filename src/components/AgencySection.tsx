@@ -7,8 +7,8 @@ export function AgencySection() {
   const a = t<any>("agency");
 
   return (
-    <section id="agency" className="relative w-full bg-background px-5 py-24 md:px-16 md:py-36">
-      <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-2 md:items-center md:gap-20">
+    <section id="agency" className="relative w-full bg-background px-5 py-16 md:px-16 md:py-24">
+      <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2 md:items-center md:gap-16">
         <div className="relative">
           <img
             src={office}
