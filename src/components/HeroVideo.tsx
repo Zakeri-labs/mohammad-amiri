@@ -263,8 +263,13 @@ export function HeroVideo() {
   const meta = CHAPTERS[active];
   const chapter = chapters[active];
 
+  // For Farsi (RTL) we keep every chapter aligned to the logical start
+  // (= right edge) so the reading flow stays natural. In English we
+  // preserve the cinematic left / center / right variation.
   const alignClass =
-    meta.align === "right"
+    lang === "fa"
+      ? "items-start text-start"
+      : meta.align === "right"
       ? "items-end text-end"
       : meta.align === "center"
       ? "items-center text-center"
