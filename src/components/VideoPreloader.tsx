@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { useT } from "@/lib/i18n";
 
 interface Props {
   src: string;
@@ -7,6 +8,8 @@ interface Props {
 }
 
 export function VideoPreloader({ src, onReady }: Props) {
+  const { lang } = useT();
+  const isFa = lang === "fa";
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
 
